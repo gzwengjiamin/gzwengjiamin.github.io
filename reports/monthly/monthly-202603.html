@@ -1,0 +1,1329 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>微信短剧生态月报 · 2026年3月</title>
+<script src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+  :root {
+    --bg: #f0f2f5;
+    --slide-bg: #ffffff;
+    --text: #1a1a2e;
+    --text-secondary: #5f6368;
+    --text-light: #9aa0a6;
+    --blue: #1a73e8;
+    --blue-light: #e8f0fe;
+    --green: #0d9e6c;
+    --green-bg: #e6f4ea;
+    --red: #d93025;
+    --red-bg: #fce8e6;
+    --orange: #e37400;
+    --orange-bg: #fef7e0;
+    --purple: #7b61ff;
+    --purple-bg: #f3f0ff;
+    --card-border: #e8eaed;
+    --border-radius: 12px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+    overflow: hidden;
+  }
+
+  .nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+    background: rgba(255,255,255,0.92); backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--card-border);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 10px 32px; font-size: 13px;
+  }
+  .nav-left { color: var(--text-secondary); font-weight: 600; font-size: 13px; min-width: 200px; }
+  .nav-center { display: flex; gap: 5px; }
+  .nav-dot { width: 8px; height: 8px; border-radius: 50%; background: #d0d3d8; cursor: pointer; transition: all 0.3s; }
+  .nav-dot.active { background: var(--blue); width: 24px; border-radius: 4px; }
+  .nav-right { display: flex; gap: 8px; }
+  .nav-btn {
+    background: #f5f5f5; border: 1px solid var(--card-border); color: var(--text);
+    padding: 6px 16px; border-radius: 6px; cursor: pointer; font-size: 12px;
+    transition: all 0.2s; font-family: inherit;
+  }
+  .nav-btn:hover { background: var(--blue); color: #fff; border-color: var(--blue); }
+
+  .slides-wrapper {
+    padding-top: 52px; display: flex; justify-content: center; align-items: center; min-height: 100vh;
+  }
+  .slide {
+    width: 1200px; height: 800px; display: none; flex-direction: column;
+    padding: 24px 48px 28px; position: relative; overflow: hidden;
+    background: var(--slide-bg); border-radius: 12px;
+    box-shadow: 0 2px 20px rgba(0,0,0,0.06);
+  }
+  .slide.active { display: flex; }
+  .slide-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px; }
+  .slide-num { font-size: 11px; color: var(--text-light); letter-spacing: 2px; }
+  .cover .slide-num, .footer-slide .slide-num {
+    position: absolute; top: 20px; right: 48px; color: rgba(255,255,255,0.5);
+  }
+
+  .cover {
+    text-align: center; align-items: center; justify-content: center;
+    background: linear-gradient(135deg, #1a73e8 0%, #4f46e5 60%, #7b61ff 100%); color: #fff;
+  }
+  .cover::after {
+    content: ''; position: absolute; right: -60px; bottom: -60px;
+    width: 400px; height: 400px; background: rgba(255,255,255,0.05); border-radius: 50%;
+  }
+  .cover::before {
+    content: ''; position: absolute; left: -80px; top: -80px;
+    width: 300px; height: 300px; background: rgba(255,255,255,0.04); border-radius: 50%;
+  }
+  .cover .tag {
+    display: inline-block; font-size: 11px; font-weight: 600; letter-spacing: 2px;
+    text-transform: uppercase; padding: 5px 16px;
+    border: 1px solid rgba(255,255,255,0.3); border-radius: 4px;
+    margin-bottom: 20px; opacity: 0.85; position: relative; z-index: 1;
+  }
+  .cover h1 { font-size: 48px; font-weight: 800; margin-bottom: 10px; position: relative; z-index: 1; }
+  .cover .sub { font-size: 18px; opacity: 0.8; margin-bottom: 24px; position: relative; z-index: 1; }
+  .cover .meta { font-size: 13px; opacity: 0.55; position: relative; z-index: 1; }
+
+  .section-tag {
+    display: inline-block; padding: 3px 12px; border-radius: 20px;
+    font-size: 10px; font-weight: 600; letter-spacing: 1px;
+  }
+  .section-tag.blue { background: var(--blue-light); color: var(--blue); }
+  .section-tag.green { background: var(--green-bg); color: var(--green); }
+  .section-tag.orange { background: var(--orange-bg); color: var(--orange); }
+  .section-tag.purple { background: var(--purple-bg); color: var(--purple); }
+
+  .slide-title { font-size: 24px; font-weight: 800; line-height: 1.3; margin-bottom: 2px; }
+  .slide-title .hl { color: var(--blue); }
+  .slide-title .hl-green { color: var(--green); }
+  .slide-title .hl-orange { color: var(--orange); }
+  .slide-title .hl-purple { color: var(--purple); }
+  .slide-sub-text { font-size: 13px; color: var(--text-secondary); margin-bottom: 8px; line-height: 1.5; }
+
+  .metric-row { display: grid; gap: 8px; margin-bottom: 8px; }
+  .metric-row.col-3 { grid-template-columns: repeat(3, 1fr); }
+  .metric-row.col-4 { grid-template-columns: repeat(4, 1fr); }
+  .metric-row.col-5 { grid-template-columns: repeat(5, 1fr); }
+  .metric-card {
+    background: #fafbfc; border: 1px solid var(--card-border);
+    border-radius: var(--border-radius); padding: 10px 14px;
+  }
+  .metric-card .label { font-size: 10px; color: var(--text-light); font-weight: 500; margin-bottom: 2px; }
+  .metric-card .val { font-size: 20px; font-weight: 800; letter-spacing: -0.5px; line-height: 1.2; }
+  .metric-card .sub-text { font-size: 10px; color: var(--text-light); margin-top: 2px; }
+
+  .chart-card {
+    background: #fafbfc; border: 1px solid var(--card-border);
+    border-radius: var(--border-radius); padding: 8px 14px; margin-bottom: 6px; flex: 1;
+  }
+  .chart-card .title { font-size: 12px; font-weight: 700; color: var(--text); margin-bottom: 1px; }
+  .chart-card .desc { font-size: 10px; color: var(--text-light); margin-bottom: 4px; }
+  .chart-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; flex: 1; }
+  .chart-grid .chart-card { display: flex; flex-direction: column; }
+  .chart-grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; flex: 1; }
+  .chart-grid-3 .chart-card { display: flex; flex-direction: column; }
+
+  .insight {
+    background: #fafbfc; border: 1px solid var(--card-border);
+    border-left: 3px solid var(--blue); border-radius: 0 var(--border-radius) var(--border-radius) 0;
+    padding: 8px 14px; font-size: 11px; color: var(--text-secondary); line-height: 1.6; margin-top: auto;
+  }
+  .insight.green-border { border-left-color: var(--green); }
+  .insight.orange-border { border-left-color: var(--orange); }
+  .insight.purple-border { border-left-color: var(--purple); }
+  .insight p { margin-bottom: 2px; }
+  .insight p:last-child { margin-bottom: 0; }
+  .insight b { color: var(--text); font-weight: 600; }
+  .insight .num { color: var(--blue); font-weight: 600; }
+  .insight .up { color: var(--green); font-weight: 600; }
+  .insight .down { color: var(--red); font-weight: 600; }
+
+  .footer-slide {
+    text-align: center; align-items: center; justify-content: center;
+    background: linear-gradient(135deg, #1a73e8 0%, #4f46e5 60%, #7b61ff 100%); color: #fff;
+  }
+  .footer-slide h2 { font-size: 36px; font-weight: 800; margin-bottom: 12px; position: relative; z-index: 1; }
+  .footer-slide p { font-size: 14px; opacity: 0.6; position: relative; z-index: 1; }
+
+  .slide-footnote {
+    position: absolute; bottom: 10px; left: 48px; right: 48px;
+    font-size: 9px; color: var(--text-light); border-top: 1px solid var(--card-border); padding-top: 4px;
+  }
+
+  /* Highlight cards (feeds) */
+  .highlight-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 10px; }
+  .highlight-card { border-radius: var(--border-radius); padding: 14px 16px; text-align: center; border: none; }
+  .highlight-card .hl-label { font-size: 11px; font-weight: 500; margin-bottom: 4px; opacity: 0.7; }
+  .highlight-card .hl-value { font-size: 28px; font-weight: 800; letter-spacing: -1px; line-height: 1.1; margin-bottom: 2px; }
+  .highlight-card .hl-sub { font-size: 10px; opacity: 0.6; }
+  .highlight-card.green { background: linear-gradient(135deg, #e6f4ea 0%, #ceead6 100%); color: #137333; }
+  .highlight-card.blue { background: linear-gradient(135deg, #e8f0fe 0%, #d2e3fc 100%); color: #174ea6; }
+  .highlight-card.orange { background: linear-gradient(135deg, #fef7e0 0%, #feefc3 100%); color: #b06000; }
+
+  /* Optimization section (feeds) */
+  .opt-section { flex: 1; display: flex; flex-direction: column; gap: 8px; }
+  .opt-section-title { font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 2px; display: flex; align-items: center; gap: 8px; }
+  .opt-section-title .badge { font-size: 10px; font-weight: 600; padding: 2px 8px; border-radius: 4px; background: var(--blue-light); color: var(--blue); }
+  .opt-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; flex: 1; }
+  .opt-card { background: #fafbfc; border: 1px solid var(--card-border); border-radius: var(--border-radius); padding: 12px 16px; display: flex; flex-direction: column; gap: 4px; }
+  .opt-card .opt-tag { display: inline-block; font-size: 9px; font-weight: 600; padding: 2px 6px; border-radius: 3px; width: fit-content; }
+  .opt-card .opt-tag.quality { background: #e8f0fe; color: #174ea6; }
+  .opt-card .opt-tag.content { background: #e6f4ea; color: #137333; }
+  .opt-card .opt-tag.ux { background: #fef7e0; color: #b06000; }
+  .opt-card .opt-tag.growth { background: #f3f0ff; color: #5b4dc7; }
+  .opt-card .opt-tag.interaction { background: #fce8e6; color: #c5221f; }
+  .opt-card .opt-title { font-size: 13px; font-weight: 700; color: var(--text); line-height: 1.4; }
+  .opt-card .opt-desc { font-size: 11px; color: var(--text-secondary); line-height: 1.5; }
+  .opt-card.wide { grid-column: 1 / -1; }
+
+  /* ---- Strategy Grid (留存) ---- */
+  .strategy-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; flex: 1; min-height: 0; }
+  .strategy-card { background: #fafbfc; border: 1px solid var(--card-border); border-radius: var(--border-radius); padding: 16px; display: flex; flex-direction: column; gap: 8px; overflow: hidden; }
+  .strategy-card .sc-header { display: flex; align-items: center; gap: 8px; }
+  .strategy-card .sc-icon { width: 28px; height: 28px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 14px; flex-shrink: 0; }
+  .strategy-card .sc-icon.blue { background: var(--blue-light); }
+  .strategy-card .sc-icon.green { background: var(--green-bg); }
+  .strategy-card .sc-icon.orange { background: var(--orange-bg); }
+  .strategy-card .sc-icon.purple { background: var(--purple-bg); }
+  .strategy-card .sc-title { font-size: 14px; font-weight: 700; color: var(--text); line-height: 1.3; }
+  .strategy-card .sc-title-row { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+  .strategy-card .sc-desc { font-size: 11px; color: var(--text-secondary); line-height: 1.6; }
+  .strategy-card .sc-img-wrap { flex: 1; display: flex; align-items: center; justify-content: center; min-height: 0; overflow: hidden; border-radius: 10px; background: #f0f2f5; }
+  .strategy-card .sc-img-wrap img { max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 8px; }
+  .strategy-card .sc-img-wrap.tall img { max-height: 360px; }
+
+  /* ---- Progress Badge ---- */
+  .progress-badge { display: inline-flex; align-items: center; gap: 3px; font-size: 9px; font-weight: 600; padding: 1px 6px; border-radius: 3px; white-space: nowrap; flex-shrink: 0; }
+  .progress-badge.design-review { background: #f3f0ff; color: #5b4dc7; }
+  .progress-badge.dev-review { background: #e8f0fe; color: #174ea6; }
+  .progress-badge.designing { background: #fef7e0; color: #b06000; }
+  .progress-badge.developing { background: #fff3e0; color: #e65100; }
+  .progress-badge.testing { background: #e0f2f1; color: #00695c; }
+  .progress-badge.launched { background: #e6f4ea; color: #137333; }
+  .progress-badge .dot { width: 5px; height: 5px; border-radius: 50%; display: inline-block; }
+  .progress-badge.design-review .dot { background: #7b61ff; }
+  .progress-badge.dev-review .dot { background: #1a73e8; }
+  .progress-badge.designing .dot { background: #e37400; }
+  .progress-badge.developing .dot { background: #e65100; }
+  .progress-badge.testing .dot { background: #00897b; }
+  .progress-badge.launched .dot { background: #0d9e6c; }
+
+  /* ---- UX Cards (体验优化) ---- */
+  .p3-body { display: flex; gap: 16px; flex: 1; min-height: 0; }
+  .p3-left { flex: 1; display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+  .p3-right { flex: 1; display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+  .ux-card { background: #fafbfc; border: 1px solid var(--card-border); border-radius: var(--border-radius); padding: 14px 16px; display: flex; gap: 14px; flex: 1; overflow: hidden; }
+  .ux-card.no-img { flex-direction: column; gap: 6px; }
+  .ux-card .ux-info { display: flex; flex-direction: column; gap: 4px; flex: 1; min-width: 0; }
+  .ux-card .ux-header { display: flex; align-items: center; gap: 8px; }
+  .ux-card .ux-icon { width: 28px; height: 28px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 14px; flex-shrink: 0; }
+  .ux-card .ux-title-row { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+  .ux-card .ux-title { font-size: 14px; font-weight: 700; color: var(--text); line-height: 1.3; }
+  .ux-card .ux-desc { font-size: 11px; color: var(--text-secondary); line-height: 1.6; }
+  .ux-card .ux-img-wrap { flex-shrink: 0; width: 220px; display: flex; align-items: center; justify-content: center; overflow: hidden; border-radius: 10px; background: #f0f2f5; }
+  .ux-card .ux-img-wrap img { max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 8px; }
+
+  /* ---- Content with Image Layout ---- */
+  .content-with-img { display: flex; gap: 20px; flex: 1; min-height: 0; }
+  .content-left { flex: 1; display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+  .content-right-img { flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+  .content-right-img img { height: 100%; max-height: 480px; width: auto; border-radius: 16px; box-shadow: 0 4px 24px rgba(0,0,0,0.12); object-fit: contain; }
+
+  /* ---- AI Insight Page ---- */
+  .slide.active.hero-slide { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 48px; }
+  .hero-slide .hero-icon { font-size: 64px; margin-bottom: 20px; }
+  .hero-slide .hero-title { font-size: 36px; font-weight: 800; line-height: 1.3; margin-bottom: 16px; }
+  .hero-slide .hero-desc { font-size: 16px; color: var(--text-secondary); line-height: 1.8; max-width: 720px; }
+  .hero-slide .hero-highlight { display: inline-block; padding: 4px 16px; border-radius: 8px; font-weight: 700; margin: 4px; }
+
+  .ai-demo-layout { display: flex; gap: 24px; flex: 1; min-height: 0; }
+  .ai-demo-info { flex: 1; display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+  .ai-demo-images { flex-shrink: 0; display: flex; gap: 12px; align-items: center; }
+  .ai-demo-images img { height: 420px; width: auto; border-radius: 16px; box-shadow: 0 4px 24px rgba(0,0,0,0.12); object-fit: contain; }
+  .ai-stat-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  .ai-stat-card { border-radius: var(--border-radius); padding: 14px 16px; text-align: center; }
+  .ai-stat-card .stat-icon { font-size: 20px; margin-bottom: 4px; }
+  .ai-stat-card .stat-val { font-size: 22px; font-weight: 800; letter-spacing: -0.5px; line-height: 1.2; }
+  .ai-stat-card .stat-label { font-size: 10px; opacity: 0.7; margin-top: 2px; }
+  .ai-bullet { display: flex; align-items: flex-start; gap: 10px; padding: 10px 14px; background: #fafbfc; border: 1px solid var(--card-border); border-radius: var(--border-radius); }
+  .ai-bullet .bullet-icon { font-size: 18px; flex-shrink: 0; margin-top: 2px; }
+  .ai-bullet .bullet-text { font-size: 13px; color: var(--text); line-height: 1.6; }
+  .ai-bullet .bullet-text b { font-weight: 700; }
+
+  @media print {
+    body { overflow: visible; }
+    .nav { display: none; }
+    .slides-wrapper { padding-top: 0; }
+    .slide { display: flex !important; page-break-after: always; height: 800px; box-shadow: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="nav">
+  <div class="nav-left" id="navTitle">微信短剧月报  01 / 16</div>
+  <div class="nav-center" id="navDots"></div>
+  <div class="nav-right">
+    <button class="nav-btn" onclick="prevSlide()">← 上一页</button>
+    <button class="nav-btn" onclick="nextSlide()">下一页 →</button>
+  </div>
+</div>
+
+<div class="slides-wrapper">
+
+<!-- ==================== P1 封面 ==================== -->
+<div class="slide cover active" data-index="0">
+  <div class="slide-num">01 / 16</div>
+  <div class="tag">Monthly Report</div>
+  <h1>微信短剧生态月报</h1>
+  <div class="sub">2026年3月 · 微信小程序短剧赛道数据盘点</div>
+  <div class="meta">统计周期 2026.03.01 - 2026.03.31 &nbsp;|&nbsp; 微信开放平台 · 小程序数据分析</div>
+</div>
+
+<!-- ==================== 数据概览 标题页 ==================== -->
+<div class="slide cover" data-index="1" style="background: linear-gradient(135deg, #0d9e6c 0%, #1a73e8 60%, #4f46e5 100%);">
+  <div class="slide-num">02 / XX</div>
+  <div class="tag" style="border-color:rgba(255,255,255,0.4);">PART 1</div>
+  <h1 style="font-size:42px;">数据概览</h1>
+  <div class="sub">活跃 · 时长 · 留存 · 虚拟支付 · 广告收入 · 用户来源</div>
+  <div class="meta">统计周期 2026.03.01 - 2026.03.31</div>
+</div>
+
+<!-- ==================== P2 大盘活跃 ==================== -->
+<div class="slide" data-index="1">
+  <div class="slide-header">
+    <div class="section-tag blue">一、活跃 · 大盘</div>
+    <div class="slide-num">02 / 16</div>
+  </div>
+  <div class="slide-title">大盘 <span class="hl">活跃趋势</span></div>
+  <div class="slide-sub-text">月均DAU 2,263万 · 月均播放PV 2.21亿/天 · 月初高位后震荡，月末回升</div>
+
+  <div class="metric-row col-5">
+    <div class="metric-card">
+      <div class="label">月均DAU</div>
+      <div class="val" style="color:var(--blue);">2,263万</div>
+      <div class="sub-text">峰值2,453万(03/31)</div>
+    </div>
+    <div class="metric-card">
+      <div class="label">月均播放PV</div>
+      <div class="val">2.21亿/天</div>
+      <div class="sub-text">峰值2.59亿(03/01)</div>
+    </div>
+    <div class="metric-card">
+      <div class="label">月均人均使用时长</div>
+      <div class="val" style="color:var(--blue);">待更新</div>
+      <div class="sub-text">Q1-use查询中</div>
+    </div>
+    <div class="metric-card">
+      <div class="label">月均人均播放时长</div>
+      <div class="val">7.6分钟</div>
+      <div class="sub-text">月中低谷7.1 → 月末7.1</div>
+    </div>
+    <div class="metric-card">
+      <div class="label">月末vs月初</div>
+      <div class="val" style="color:var(--green);">+6.0%</div>
+      <div class="sub-text">DAU 2,314→2,453万</div>
+    </div>
+  </div>
+
+  <div class="chart-card" style="flex:1.2;">
+    <div class="title">短剧大盘DAU日趋势</div>
+    <div class="desc">单位：万人 · 虚线为月均值</div>
+    <div id="chart-dau" style="width:100%;height:200px;"></div>
+  </div>
+
+  <div class="chart-grid" style="margin-top:6px;">
+    <div class="chart-card">
+      <div class="title">日播放PV</div>
+      <div class="desc">单位：亿次</div>
+      <div id="chart-play" style="width:100%;height:120px;"></div>
+    </div>
+    <div class="chart-card">
+      <div class="title">人均播放时长</div>
+      <div class="desc">单位：分钟</div>
+      <div id="chart-duration" style="width:100%;height:120px;"></div>
+    </div>
+  </div>
+
+  <div class="insight">
+    <p><b>趋势：</b>3月大盘DAU承接2月末高位，月初 <span class="num">2,314万</span> 后逐步回落，中旬触底 <span class="down">2,085万</span>(3/20)，月末回升至 <span class="up">2,453万</span>(3/31)。播放PV月初 <span class="num">2.59亿</span> 后稳定在2.1~2.3亿区间。人均播放时长在7.1~8.4分钟间波动，月均 <span class="num">7.6分钟</span>。</p>
+  </div>
+</div>
+
+<!-- ==================== P3 官小活跃 ==================== -->
+<div class="slide" data-index="2">
+  <div class="slide-header">
+    <div class="section-tag purple">一、活跃 · 官方小程序</div>
+    <div class="slide-num">03 / 16</div>
+  </div>
+  <div class="slide-title">官方小程序 <span class="hl-purple">持续高增长</span></div>
+  <div class="slide-sub-text">月均DAU 229.4万，较2月96.9万增长137% · 峰值324.7万(3/27)</div>
+
+  <div class="metric-row col-5">
+    <div class="metric-card">
+      <div class="label">月均DAU</div>
+      <div class="val" style="color:var(--purple);">229.4万</div>
+      <div class="sub-text">峰值324.7万(03/27)</div>
+    </div>
+    <div class="metric-card">
+      <div class="label">月均播放PV</div>
+      <div class="val">3,704万/天</div>
+      <div class="sub-text">峰值5,009万(03/27)</div>
+    </div>
+    <div class="metric-card">
+      <div class="label">月均人均使用时长</div>
+      <div class="val" style="color:var(--purple);">26.9分钟</div>
+      <div class="sub-text">月初30.1→月末28.8</div>
+    </div>
+    <div class="metric-card">
+      <div class="label">月均人均播放时长</div>
+      <div class="val">14.1分钟</div>
+      <div class="sub-text">月初13.1→月末15.6</div>
+    </div>
+    <div class="metric-card">
+      <div class="label">月末vs月初</div>
+      <div class="val" style="color:var(--green);">+34.8%</div>
+      <div class="sub-text">DAU 192.9→260.0万</div>
+    </div>
+  </div>
+
+  <div class="chart-card" style="flex:1.2;">
+    <div class="title">官小DAU日趋势</div>
+    <div class="desc">单位：万人 · 虚线为月均值</div>
+    <div id="chart-gx-dau" style="width:100%;height:200px;"></div>
+  </div>
+
+  <div class="chart-grid" style="margin-top:6px;">
+    <div class="chart-card">
+      <div class="title">日播放PV</div>
+      <div class="desc">单位：万次</div>
+      <div id="chart-gx-play" style="width:100%;height:120px;"></div>
+    </div>
+    <div class="chart-card">
+      <div class="title">人均播放时长</div>
+      <div class="desc">单位：分钟</div>
+      <div id="chart-gx-dur" style="width:100%;height:120px;"></div>
+    </div>
+  </div>
+
+  <div class="insight" style="border-left-color:var(--purple);">
+    <p><b>亮点：</b>官小DAU延续2月爆发势头，月初 <span class="num">192.9万</span>，3/5冲高至 <span class="up">238.4万</span>，中旬回调至 <span class="down">165.7万</span>(3/9)后持续攀升，3/27达到峰值 <span class="up">324.7万</span>。月均DAU <span class="num">229.4万</span>，较2月(96.9万)增长 <span class="up">137%</span>。人均使用时长月均 <span class="num">26.9分钟</span>，人均播放时长 <span class="num">14.1分钟</span>，远高于大盘7.6分钟，用户质量持续优秀。</p>
+  </div>
+</div>
+
+<!-- ==================== P4 端原生活跃 ==================== -->
+<div class="slide" data-index="3">
+  <div class="slide-header">
+    <div class="section-tag green">一、活跃 · 视频号端原生</div>
+    <div class="slide-num">04 / 16</div>
+  </div>
+  <div class="slide-title">视频号端原生 <span class="hl-green">流量高位运行</span></div>
+  <div class="slide-sub-text">月均播放UV 1.41亿 · 短剧生态最大流量入口 · 人均播放时长22.0分钟</div>
+
+  <div class="metric-row col-4">
+    <div class="metric-card">
+      <div class="label">月均播放UV</div>
+      <div class="val" style="color:var(--green);">1.41亿</div>
+      <div class="sub-text">峰值1.55亿(03/27)</div>
+    </div>
+    <div class="metric-card">
+      <div class="label">月均播放PV</div>
+      <div class="val">19.9亿/天</div>
+      <div class="sub-text">峰值24.9亿(03/30)</div>
+    </div>
+    <div class="metric-card">
+      <div class="label">人均播放时长</div>
+      <div class="val">22.0分钟</div>
+      <div class="sub-text">远高于小程序端</div>
+    </div>
+    <div class="metric-card">
+      <div class="label">月末vs月初</div>
+      <div class="val" style="color:var(--red);">-1.4%</div>
+      <div class="sub-text">1.54亿→1.52亿UV</div>
+    </div>
+  </div>
+
+  <div class="chart-card" style="flex:1;">
+    <div class="title">端原生播放UV日趋势（外层 + 内层）</div>
+    <div class="desc">外层(亿人) vs 内层(万人) · 虚线为月均值</div>
+    <div id="chart-fd-dau" style="width:100%;height:200px;"></div>
+  </div>
+
+  <div class="chart-grid" style="margin-top:4px;">
+    <div class="chart-card">
+      <div class="title">端原生播放PV</div>
+      <div class="desc">单位：亿次</div>
+      <div id="chart-fd-play" style="width:100%;height:120px;"></div>
+    </div>
+    <div class="chart-card">
+      <div class="title">人均播放时长</div>
+      <div class="desc">单位：分钟</div>
+      <div id="chart-fd-dur" style="width:100%;height:120px;"></div>
+    </div>
+  </div>
+
+  <div class="insight green-border">
+    <p><b>走势：</b>端原生播放UV月初 <span class="num">1.54亿</span> 承接2月末高位，中旬回落至 <span class="down">1.29亿</span>(3/11)，月末回升至 <span class="up">1.53亿</span>(3/26)。人均播放时长 <span class="num">22.0分钟</span>，下半月稳定在22~24分钟，沉浸度持续优于小程序端。月末流量显著回升，3/26-3/31日均播放PV超24亿。</p>
+  </div>
+</div>
+
+<!-- ==================== P5 大盘时长 ==================== -->
+<div class="slide" data-index="4">
+  <div class="slide-header">
+    <div class="section-tag blue">二、时长</div>
+    <div class="slide-num">05 / 16</div>
+  </div>
+  <div class="slide-title">用户 <span class="hl">播放时长</span> 分析</div>
+  <div class="slide-sub-text">大盘·官小·端原生三端对比 · 端原生沉浸度远超小程序端</div>
+
+  <div class="metric-row col-3">
+    <div class="metric-card">
+      <div class="label">大盘月均人均播放时长</div>
+      <div class="val" style="color:var(--blue);">7.6分钟</div>
+      <div class="sub-text">月中低谷7.1→月末7.1</div>
+    </div>
+    <div class="metric-card">
+      <div class="label">官小月均人均播放时长</div>
+      <div class="val" style="color:var(--purple);">14.1分钟</div>
+      <div class="sub-text">月初13.1→月末13.4</div>
+    </div>
+    <div class="metric-card">
+      <div class="label">端原生月均人均播放时长</div>
+      <div class="val" style="color:var(--green);">21.7分钟</div>
+      <div class="sub-text">下半月回升至23分钟</div>
+    </div>
+  </div>
+
+  <div class="chart-grid-3" style="flex:1;">
+    <div class="chart-card">
+      <div class="title">大盘人均播放时长</div>
+      <div class="desc">单位：分钟</div>
+      <div id="chart-dur-dp" style="width:100%;height:200px;"></div>
+    </div>
+    <div class="chart-card">
+      <div class="title">官小人均播放时长</div>
+      <div class="desc">单位：分钟</div>
+      <div id="chart-dur-gx" style="width:100%;height:200px;"></div>
+    </div>
+    <div class="chart-card">
+      <div class="title">端原生人均播放时长</div>
+      <div class="desc">单位：分钟</div>
+      <div id="chart-dur-fd" style="width:100%;height:200px;"></div>
+    </div>
+  </div>
+
+  <div class="insight">
+    <p><b>对比分析：</b>端原生人均播放时长 <span class="num">22.0分钟</span> 是大盘的 <span class="up">2.9倍</span>，沉浸优势依然显著。官小 <span class="num">14.1分钟</span> 随用户基数扩大趋于稳定，仍为大盘的1.9倍。大盘播放时长 <span class="num">7.6分钟</span> 较2月9.3分钟有所下降，反映节后用户行为回归常态。</p>
+  </div>
+</div>
+
+<!-- ==================== P6 留存对比（大盘+官小合并） ==================== -->
+<div class="slide" data-index="5">
+  <div class="slide-header">
+    <div class="section-tag blue">三、留存对比</div>
+    <div class="slide-num">06 / 16</div>
+  </div>
+  <div class="slide-title">次日留存 <span class="hl">大盘 vs 官小</span></div>
+  <div class="slide-sub-text">大盘月均次留14.6% · 官小28.8%（大盘2.0倍）· 播放口径</div>
+
+  <div style="display:flex;gap:12px;margin-bottom:6px;">
+    <div style="flex:1;">
+      <div style="font-size:11px;font-weight:700;color:var(--blue);margin-bottom:4px;letter-spacing:1px;">▎大盘</div>
+      <div class="metric-row col-4" style="margin-bottom:0;">
+        <div class="metric-card" style="padding:8px 10px;">
+          <div class="label">月均次留率</div>
+          <div class="val" style="color:var(--blue);font-size:20px;">14.4%</div>
+        </div>
+        <div class="metric-card" style="padding:8px 10px;">
+          <div class="label">月均DAU</div>
+          <div class="val" style="font-size:20px;">2,238万</div>
+        </div>
+        <div class="metric-card" style="padding:8px 10px;">
+          <div class="label">次留人数</div>
+          <div class="val" style="font-size:20px;">322万</div>
+        </div>
+        <div class="metric-card" style="padding:8px 10px;">
+          <div class="label">最高次留</div>
+          <div class="val" style="color:var(--green);font-size:20px;">17.3%</div>
+          <div class="sub-text">03/05</div>
+        </div>
+      </div>
+    </div>
+    <div style="flex:1;">
+      <div style="font-size:11px;font-weight:700;color:var(--purple);margin-bottom:4px;letter-spacing:1px;">▎官小</div>
+      <div class="metric-row col-4" style="margin-bottom:0;">
+        <div class="metric-card" style="padding:8px 10px;">
+          <div class="label">月均次留率</div>
+          <div class="val" style="color:var(--purple);font-size:20px;">28.5%</div>
+        </div>
+        <div class="metric-card" style="padding:8px 10px;">
+          <div class="label">月均DAU</div>
+          <div class="val" style="font-size:20px;">210.5万</div>
+        </div>
+        <div class="metric-card" style="padding:8px 10px;">
+          <div class="label">次留人数</div>
+          <div class="val" style="font-size:20px;">60.0万</div>
+        </div>
+        <div class="metric-card" style="padding:8px 10px;">
+          <div class="label">最高次留</div>
+          <div class="val" style="color:var(--green);font-size:20px;">33.9%</div>
+          <div class="sub-text">03/12</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="chart-card" style="flex:1;">
+    <div class="title">次日留存率日趋势（大盘 vs 官小）</div>
+    <div class="desc">播放口径 · 虚线为各自月均</div>
+    <div id="chart-retain-compare" style="width:100%;height:260px;"></div>
+  </div>
+
+  <div class="insight">
+    <p><b>对比：</b>官小月均次留 <span class="num">28.8%</span> 是大盘 <span class="num">14.6%</span> 的 <span class="up">2.0倍</span>。大盘次留较2月(10.9%)显著提升，3/26峰值 <span class="up">18.4%</span>；官小次留整体稳定在25~34%，3/12达到 <span class="up">33.9%</span>，内容匹配质量持续领先。</p>
+  </div>
+</div>
+
+<!-- ==================== P8 大盘虚拟支付 ==================== -->
+<div class="slide" data-index="6">
+  <div class="slide-header">
+    <div class="section-tag orange">四、虚拟支付 · 大盘</div>
+    <div class="slide-num">08 / 16</div>
+  </div>
+  <div class="slide-title">GMV <span class="hl-orange">虚拟支付</span></div>
+  <div class="slide-sub-text">日均GMV 731万 · 月累计1.68亿 · 整体高位运行</div>
+
+  <div class="metric-row col-4">
+    <div class="metric-card">
+      <div class="label">日均GMV</div>
+      <div class="val" style="color:var(--orange);">731万</div>
+      <div class="sub-text">月累计1.68亿</div>
+    </div>
+    <div class="metric-card">
+      <div class="label">日均订单</div>
+      <div class="val">45.2万</div>
+      <div class="sub-text">月累计1,040万笔</div>
+    </div>
+    <div class="metric-card">
+      <div class="label">客单价</div>
+      <div class="val">16.2元</div>
+      <div class="sub-text">与2月持平</div>
+    </div>
+    <div class="metric-card">
+      <div class="label">月末vs月初</div>
+      <div class="val" style="color:var(--red);">-17.2%</div>
+      <div class="sub-text">日GMV 812→671万</div>
+    </div>
+  </div>
+
+  <div class="chart-card" style="flex:1;">
+    <div class="title">日GMV走势</div>
+    <div class="desc">单位：万元 · 虚线为月均</div>
+    <div id="chart-gmv" style="width:100%;height:200px;"></div>
+  </div>
+
+  <div class="chart-grid" style="margin-top:4px;">
+    <div class="chart-card">
+      <div class="title">日订单量</div>
+      <div class="desc">单位：万笔</div>
+      <div id="chart-orders" style="width:100%;height:120px;"></div>
+    </div>
+    <div class="chart-card">
+      <div class="title">日均客单价</div>
+      <div class="desc">单位：元</div>
+      <div id="chart-arpu" style="width:100%;height:120px;"></div>
+    </div>
+  </div>
+
+  <div class="insight orange-border">
+    <p><b>GMV：</b>月初 <span class="num">812万</span> 承接2月回暖势头，此后在660~817万区间波动，峰值 <span class="up">817万</span>(3/18)。月末 <span class="num">671万</span> 略低于月初。日均订单45.2万笔，客单价16.2元与2月持平。<b>注：</b>官小和端原生均为纯IAA模式，不涉及虚拟支付。</p>
+  </div>
+</div>
+
+<!-- ==================== P9 大盘广告收入 ==================== -->
+<div class="slide" data-index="7">
+  <div class="slide-header">
+    <div class="section-tag green">五、广告收入 · 大盘</div>
+    <div class="slide-num">09 / 16</div>
+  </div>
+  <div class="slide-title">大盘IAA <span class="hl-green">广告变现</span></div>
+  <div class="slide-sub-text">日均IAA 1,411万 · 月累计3.24亿 · ECPM月均123.8</div>
+
+  <div class="metric-row col-4">
+    <div class="metric-card">
+      <div class="label">日均IAA</div>
+      <div class="val" style="color:var(--green);">1,411万</div>
+      <div class="sub-text">月累计3.24亿</div>
+    </div>
+    <div class="metric-card">
+      <div class="label">月均ECPM</div>
+      <div class="val">123.8</div>
+      <div class="sub-text">收入/曝光×1000</div>
+    </div>
+    <div class="metric-card">
+      <div class="label">日均广告曝光</div>
+      <div class="val">1.14亿</div>
+      <div class="sub-text">峰值1.32亿(03/01)</div>
+    </div>
+    <div class="metric-card">
+      <div class="label">月末vs月初</div>
+      <div class="val" style="color:var(--red);">-17.2%</div>
+      <div class="sub-text">日收入1,683→1,394万</div>
+    </div>
+  </div>
+
+  <div class="chart-card" style="flex:1;">
+    <div class="title">大盘IAA日收入</div>
+    <div class="desc">单位：万元 · 虚线为月均</div>
+    <div id="chart-iaa-dp" style="width:100%;height:200px;"></div>
+  </div>
+
+  <div class="chart-grid" style="margin-top:4px;">
+    <div class="chart-card">
+      <div class="title">广告曝光PV</div>
+      <div class="desc">单位：万次</div>
+      <div id="chart-exp-dp" style="width:100%;height:120px;"></div>
+    </div>
+    <div class="chart-card">
+      <div class="title">ECPM走势</div>
+      <div class="desc">收入/曝光×1000</div>
+      <div id="chart-ecpm-dp" style="width:100%;height:120px;"></div>
+    </div>
+  </div>
+
+  <div class="insight green-border">
+    <p><b>走势：</b>月初 <span class="num">1,683万</span> 为月内最高，此后随DAU回落同步走低，3/12触底 <span class="down">1,246万</span> 后有所回升。ECPM在115~130间波动，整体稳定。月均ECPM <span class="num">123.8</span> 较2月121.0小幅提升。</p>
+  </div>
+</div>
+
+<!-- ==================== P10 官小广告收入 ==================== -->
+<div class="slide" data-index="8">
+  <div class="slide-header">
+    <div class="section-tag purple">五、广告收入 · 官方小程序</div>
+    <div class="slide-num">10 / 16</div>
+  </div>
+  <div class="slide-title">官小IAA <span class="hl-purple">广告变现</span></div>
+  <div class="slide-sub-text">日均IAA 247万 · 月累计7,645万 · ECPM 116.4</div>
+
+  <div class="metric-row col-4">
+    <div class="metric-card">
+      <div class="label">日均IAA</div>
+      <div class="val" style="color:var(--purple);">222.3万</div>
+      <div class="sub-text">月累计5,113万</div>
+    </div>
+    <div class="metric-card">
+      <div class="label">月均ECPM</div>
+      <div class="val">119.9</div>
+      <div class="sub-text">接近大盘水平</div>
+    </div>
+    <div class="metric-card">
+      <div class="label">月末日收入</div>
+      <div class="val" style="color:var(--green);">278.1万</div>
+      <div class="sub-text">峰值307.6万(03/05)</div>
+    </div>
+    <div class="metric-card">
+      <div class="label">月末占大盘</div>
+      <div class="val">15.8%</div>
+      <div class="sub-text">月均占比</div>
+    </div>
+  </div>
+
+  <div class="chart-card" style="flex:1;">
+    <div class="title">官小IAA日收入</div>
+    <div class="desc">单位：万元 · 虚线为月均</div>
+    <div id="chart-iaa-gx" style="width:100%;height:200px;"></div>
+  </div>
+
+  <div class="chart-grid" style="margin-top:4px;">
+    <div class="chart-card">
+      <div class="title">广告曝光PV</div>
+      <div class="desc">单位：万次</div>
+      <div id="chart-exp-gx" style="width:100%;height:120px;"></div>
+    </div>
+    <div class="chart-card">
+      <div class="title">ECPM走势</div>
+      <div class="desc">收入/曝光×1000</div>
+      <div id="chart-ecpm-gx" style="width:100%;height:120px;"></div>
+    </div>
+  </div>
+
+  <div class="insight" style="border-left-color:var(--purple);">
+    <p><b>持续增长：</b>官小IAA日均 <span class="num">246.6万</span>，较2月(100.2万)增长 <span class="up">146%</span>。3/27峰值 <span class="up">341.1万</span>，ECPM月均 <span class="num">116.4</span>，接近大盘水平。月累计 <span class="num">7,645万</span>，较2月2,806万增长 <span class="up">172%</span>。官小已稳定贡献大盘IAA的 <span class="num">17.5%</span>。</p>
+  </div>
+</div>
+
+<!-- ==================== P11 端原生广告收入 ==================== -->
+<div class="slide" data-index="9">
+  <div class="slide-header">
+    <div class="section-tag green">五、广告收入 · 视频号端原生</div>
+    <div class="slide-num">11 / 16</div>
+  </div>
+  <div class="slide-title">端原生IAA <span class="hl-green">广告变现</span></div>
+  <div class="slide-sub-text">日均IAA 1,454万 · 月累计3.35亿 · 短剧广告变现主力引擎</div>
+
+  <div class="metric-row col-4">
+    <div class="metric-card">
+      <div class="label">日均IAA</div>
+      <div class="val" style="color:var(--green);">1,454万</div>
+      <div class="sub-text">月累计3.35亿</div>
+    </div>
+    <div class="metric-card">
+      <div class="label">月均ECPM</div>
+      <div class="val">47.5</div>
+      <div class="sub-text">月末回升至45.2</div>
+    </div>
+    <div class="metric-card">
+      <div class="label">日均广告曝光</div>
+      <div class="val">3.08亿</div>
+      <div class="sub-text">峰值3.32亿(03/18)</div>
+    </div>
+    <div class="metric-card">
+      <div class="label">月末vs月初</div>
+      <div class="val" style="color:var(--red);">-11.0%</div>
+      <div class="sub-text">1,610→1,432万</div>
+    </div>
+  </div>
+
+  <div class="chart-card" style="flex:1;">
+    <div class="title">端原生IAA日收入</div>
+    <div class="desc">单位：万元 · 虚线为月均</div>
+    <div id="chart-iaa-fd" style="width:100%;height:200px;"></div>
+  </div>
+
+  <div class="chart-grid" style="margin-top:4px;">
+    <div class="chart-card">
+      <div class="title">广告曝光PV</div>
+      <div class="desc">单位：亿次</div>
+      <div id="chart-exp-fd" style="width:100%;height:120px;"></div>
+    </div>
+    <div class="chart-card">
+      <div class="title">ECPM走势</div>
+      <div class="desc">收入/曝光×1000</div>
+      <div id="chart-ecpm-fd" style="width:100%;height:120px;"></div>
+    </div>
+  </div>
+
+  <div class="insight green-border">
+    <p><b>表现：</b>端原生日IAA月初 <span class="num">1,610万</span>，3/5冲高至 <span class="up">1,664万</span>，中旬回调至 <span class="down">1,294万</span>(3/17)后企稳。ECPM月均 <span class="num">47.5</span>，较2月39.5提升20%，广告主预算持续恢复。月累计 <span class="num">3.35亿</span>，较2月2.82亿增长19%。</p>
+  </div>
+</div>
+
+<!-- ==================== P12 大盘用户来源 ==================== -->
+<div class="slide" data-index="10">
+  <div class="slide-header">
+    <div class="section-tag blue">六、用户来源 · 大盘</div>
+    <div class="slide-num">13 / 16</div>
+  </div>
+  <div class="slide-title">大盘 <span class="hl">用户来源</span> 分布</div>
+  <div class="slide-sub-text">3月累计 · 广告为核心获客引擎 · 视频号渠道为第二大来源</div>
+
+  <div class="metric-row col-5">
+    <div class="metric-card">
+      <div class="label">广告</div>
+      <div class="val" style="color:var(--blue);font-size:16px;">1.49亿</div>
+      <div class="sub-text">占比62.5%</div>
+    </div>
+    <div class="metric-card">
+      <div class="label">视频号渠道</div>
+      <div class="val" style="font-size:16px;">3,517万</div>
+      <div class="sub-text">占比14.8%</div>
+    </div>
+    <div class="metric-card">
+      <div class="label">内部跳转<span style="font-size:9px;color:var(--text-light);font-weight:400;">（广告-小程序/笔笔省）</span></div>
+      <div class="val" style="font-size:16px;">1,720万</div>
+      <div class="sub-text">占比7.2%</div>
+    </div>
+    <div class="metric-card">
+      <div class="label">外部跳转</div>
+      <div class="val" style="font-size:16px;">1,524万</div>
+      <div class="sub-text">占比6.4%</div>
+    </div>
+    <div class="metric-card">
+      <div class="label">其他</div>
+      <div class="val" style="font-size:16px;">2,100万</div>
+      <div class="sub-text">分享/任务栏/搜索等</div>
+    </div>
+  </div>
+
+  <div class="chart-card" style="flex:1;">
+    <div class="title">大盘用户来源分布</div>
+    <div class="desc">月累计UV（去重） · Top 10场景</div>
+    <div id="chart-source-dp" style="width:100%;height:310px;"></div>
+  </div>
+
+  <div class="insight">
+    <p><b>结构：</b>广告渠道 <span class="num">1.49亿UV</span>（占62.5%）仍是最大获客来源。视频号渠道 <span class="num">3,517万UV</span>（14.8%）为第二大来源。内部跳转（广告-小程序/笔笔省进入） <span class="num">1,720万</span>（7.2%）和外部跳转 <span class="num">1,524万</span>（6.4%）保持稳定。</p>
+  </div>
+</div>
+
+<!-- ==================== P14 官小用户来源 ==================== -->
+<div class="slide" data-index="11">
+  <div class="slide-header">
+    <div class="section-tag purple">六、用户来源 · 官方小程序</div>
+    <div class="slide-num">14 / 16</div>
+  </div>
+  <div class="slide-title">官小 <span class="hl-purple">用户来源</span> 分布</div>
+  <div class="slide-sub-text">广告主引擎 · 内部跳转占比上升 · 多元化获客初见成效</div>
+
+  <div class="metric-row col-5">
+    <div class="metric-card">
+      <div class="label">广告</div>
+      <div class="val" style="color:var(--purple);font-size:16px;">1,819万</div>
+      <div class="sub-text">占比74.4%</div>
+    </div>
+    <div class="metric-card">
+      <div class="label">内部跳转</div>
+      <div class="val" style="font-size:16px;">260万</div>
+      <div class="sub-text">占比10.6%</div>
+    </div>
+    <div class="metric-card">
+      <div class="label">发现·小程序</div>
+      <div class="val" style="font-size:16px;">98万</div>
+      <div class="sub-text">占比4.0%</div>
+    </div>
+    <div class="metric-card">
+      <div class="label">任务栏</div>
+      <div class="val" style="font-size:16px;">87万</div>
+      <div class="sub-text">占比3.6%</div>
+    </div>
+    <div class="metric-card">
+      <div class="label">外部跳转</div>
+      <div class="val" style="font-size:16px;">81万</div>
+      <div class="sub-text">占比3.3%</div>
+    </div>
+  </div>
+
+  <div class="chart-card" style="flex:1;">
+    <div class="title">官小用户来源分布</div>
+    <div class="desc">月累计UV（去重） · Top 10场景</div>
+    <div id="chart-source-gx" style="width:100%;height:310px;"></div>
+  </div>
+
+  <div class="insight" style="border-left-color:var(--purple);">
+    <p><b>对比：</b>官小广告占比 <span class="num">72.6%</span> 高于大盘54.1%，广告仍是核心驱动力。内部跳转 <span class="num">333万</span>（10.2%）和"发现·小程序" <span class="num">130万</span>（4.0%）持续贡献自然流量。任务栏 <span class="num">113万</span>（3.5%）较2月持续增长，说明用户主动回访习惯在建立。</p>
+  </div>
+</div>
+
+<!-- ==================== 工作进展 标题页 ==================== -->
+<div class="slide cover" style="background: linear-gradient(135deg, #e37400 0%, #d93025 60%, #c5221f 100%);">
+  <div class="slide-num">XX / XX</div>
+  <div class="tag" style="border-color:rgba(255,255,255,0.4);">PART 2</div>
+  <h1 style="font-size:42px;">基础部分工作进展</h1>
+  <div class="sub">3月重点项目推进与优化成果</div>
+  <div class="meta">微信开放平台 · 小程序数据分析</div>
+</div>
+
+<!-- ==================== 工作进展：P1 Feeds流盘点与优化 ==================== -->
+<div class="slide">
+  <div class="slide-header">
+    <div class="section-tag blue">工作进展 · Feeds流</div>
+    <div class="slide-num">XX / XX</div>
+  </div>
+  <div class="slide-title">Feeds流 <span class="hl">盘点与优化</span></div>
+  <div class="slide-sub-text">实验效果：播放人数显著提升 · 人均观看3.8~4.4条 · feeds→正片转化率25%</div>
+
+  <div class="highlight-row">
+    <div class="highlight-card green">
+      <div class="hl-label">实验效果 · 播放人数</div>
+      <div class="hl-value">+29%</div>
+      <div class="hl-sub">显著提升</div>
+    </div>
+    <div class="highlight-card blue">
+      <div class="hl-label">人均观看Feeds</div>
+      <div class="hl-value">3.8~4.4</div>
+      <div class="hl-sub">条/人</div>
+    </div>
+    <div class="highlight-card orange">
+      <div class="hl-label">Feeds→正片转化率</div>
+      <div class="hl-value">25%</div>
+      <div class="hl-sub">新用户次留 +5.4%</div>
+    </div>
+  </div>
+
+  <div class="content-with-img">
+    <div class="content-left">
+      <div class="opt-section">
+        <div class="opt-section-title">
+          优化项目
+          <span class="badge">4项</span>
+        </div>
+        <div class="opt-grid">
+          <div class="opt-card">
+            <span class="opt-tag quality">画质</span>
+            <div class="opt-title">
+              a. Feeds流清晰度优化
+              <span class="progress-badge dev-review"><span class="dot"></span>开发评估</span>
+            </div>
+            <div class="opt-desc">提升视频流清晰度，改善用户观看体验</div>
+          </div>
+          <div class="opt-card">
+            <span class="opt-tag content">内容</span>
+            <div class="opt-title">
+              b. 热评填充到简介
+              <span class="progress-badge design-review"><span class="dot"></span>设计评估</span>
+            </div>
+            <div class="opt-desc">高赞评论自动填充到简介区域，提升吸引力</div>
+          </div>
+          <div class="opt-card">
+            <span class="opt-tag interaction">交互</span>
+            <div class="opt-title">
+              c. 看全集 + 右滑进正片
+              <span class="progress-badge design-review"><span class="dot"></span>设计评估</span>
+            </div>
+            <div class="opt-desc">优化看全集点击体验，新增右滑进正片路径</div>
+          </div>
+          <div class="opt-card">
+            <span class="opt-tag growth">增长</span>
+            <div class="opt-title">
+              d. 一键关注剧城方视频号
+              <span class="progress-badge designing"><span class="dot"></span>方案设计中</span>
+            </div>
+            <div class="opt-desc">增加关注入口，促进私域沉淀与长期留存</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="content-right-img">
+      <img src="0f35303a-bbc8-48eb-a787-6543c1bdbc95.png" alt="Feeds流界面截图">
+    </div>
+  </div>
+
+  <div class="insight" style="margin-top: 8px;">
+    <p><b>实验小结：</b>Feeds流优化实验效果显著，播放人数 <span class="up">+29%</span>，对新用户次留有明显帮助（<span class="up">+5.4%</span>）。人均观看 <span class="num">3.8~4.4条</span>，Feeds→正片转化率 <span class="num">25%</span>，已成为正片导流的重要入口。</p>
+  </div>
+</div>
+
+<!-- ==================== 工作进展：P2 用户留存专项 ==================== -->
+<div class="slide">
+  <div class="slide-header">
+    <div class="section-tag green">工作进展 · 用户留存</div>
+    <div class="slide-num">XX / XX</div>
+  </div>
+  <div class="slide-title">用户留存 <span class="hl-green">专项优化</span></div>
+  <div class="slide-sub-text">从播放器引导 → 首页找回教育 → 续看订阅提醒，构建完整的用户回流闭环</div>
+
+  <div class="strategy-grid">
+    <div class="strategy-card">
+      <div class="sc-header">
+        <div class="sc-icon blue">🏠</div>
+        <div class="sc-title-row">
+          <span class="sc-title">播放器引导<br>返回首页</span>
+          <span class="progress-badge developing"><span class="dot"></span>开发中</span>
+        </div>
+      </div>
+      <div class="sc-desc">在播放器左上角增加"去看朋友♡的剧"气泡引导，吸引用户从播放页跳转回首页，提升首页流量与内容分发效率。</div>
+      <div class="sc-img-wrap">
+        <img src="tapd_70091668_base64_1773113055_743.png" alt="播放器引导返回首页">
+      </div>
+    </div>
+    <div class="strategy-card">
+      <div class="sc-header">
+        <div class="sc-icon green">🔔</div>
+        <div class="sc-title-row">
+          <span class="sc-title">首页找回教育<br>弹窗 & 订阅</span>
+          <span class="progress-badge developing"><span class="dot"></span>开发中</span>
+        </div>
+      </div>
+      <div class="sc-desc">首次进入首页展示"可在微信下拉找回"教育弹窗，底部提供"有好剧提醒我"订阅按钮，降低回访路径摩擦。</div>
+      <div class="sc-img-wrap tall">
+        <img src="WeCom20260312-132416@2x.png" alt="首页找回弹窗和订阅按钮">
+      </div>
+    </div>
+    <div class="strategy-card">
+      <div class="sc-header">
+        <div class="sc-icon orange">📌</div>
+        <div class="sc-title-row">
+          <span class="sc-title">播放器续看<br>订阅 & 提醒</span>
+          <span class="progress-badge designing"><span class="dot"></span>设计中</span>
+        </div>
+      </div>
+      <div class="sc-desc">播放器底部增加"订阅这个剧，我没看完时提醒我"横条提示，支持一键订阅，促进未完结用户回流。</div>
+      <div class="sc-img-wrap">
+        <img src="MTY4ODg1ODMzNzY0MDEyNQ_65272_T_2snESG7Sx1n8aA_1772723859.png" alt="播放器续看订阅提醒">
+      </div>
+    </div>
+  </div>
+
+  <div class="insight green-border" style="margin-top: 8px;">
+    <p><b>留存策略闭环：</b>通过<b>播放器引导回首页</b>（提升首页渗透）→ <b>首页教育弹窗</b>（建立下拉找回心智）→ <b>续看订阅提醒</b>（促进断点回流），构建从「看剧 → 回首页 → 找回 → 续看」的完整用户留存闭环。</p>
+  </div>
+</div>
+
+<!-- ==================== 工作进展：P3 用户体验优化 ==================== -->
+<div class="slide">
+  <div class="slide-header">
+    <div class="section-tag orange">工作进展 · 用户体验</div>
+    <div class="slide-num">XX / XX</div>
+  </div>
+  <div class="slide-title">用户体验 <span class="hl-orange">优化升级</span></div>
+  <div class="slide-sub-text">聚焦播放体验与视觉适配，提升用户操作效率与舒适度</div>
+
+  <div class="p3-body">
+    <div class="p3-left">
+      <div class="ux-card">
+        <div class="ux-info">
+          <div class="ux-header">
+            <div class="ux-icon" style="background: var(--green-bg);">✅</div>
+            <div class="ux-title-row">
+              <span class="ux-title">剧集看过状态标记</span>
+              <span class="progress-badge launched"><span class="dot"></span>已上线</span>
+            </div>
+          </div>
+          <div class="ux-desc">在选集面板中，为用户已观看过的集数添加绿色标记，方便快速定位未看内容，避免重复观看造成的体验损失。已看集数一目了然，提升选集效率。</div>
+        </div>
+        <div class="ux-img-wrap">
+          <img src="Weixin Image_20260312133853_210_169.jpg" alt="剧集看过状态标记">
+        </div>
+      </div>
+    </div>
+    <div class="p3-right">
+      <div class="ux-card">
+        <div class="ux-info">
+          <div class="ux-header">
+            <div class="ux-icon" style="background: var(--blue-light);">⚡</div>
+            <div class="ux-title-row">
+              <span class="ux-title">倍速功能优化（新增三倍速）</span>
+              <span class="progress-badge launched"><span class="dot"></span>安卓已上线</span>
+            </div>
+          </div>
+          <div class="ux-desc">新增 3.0x 倍速选项，支持 0.5x / 1.0x / 1.25x / 1.5x / 2.0x / 3.0x 六档。满足用户快速追剧需求，提升内容消费效率。</div>
+        </div>
+        <div class="ux-img-wrap">
+          <img src="03fc8fa8-76fd-4b5e-8e9a-03f278f83b68.png" alt="倍速功能优化">
+        </div>
+      </div>
+      <div class="ux-card no-img">
+        <div class="ux-header">
+          <div class="ux-icon" style="background: var(--purple-bg);">🌙</div>
+          <div class="ux-title-row">
+            <span class="ux-title">适配 Dark 模式 & 大字体</span>
+            <span class="progress-badge designing"><span class="dot"></span>设计中</span>
+          </div>
+        </div>
+        <div class="ux-desc">全面适配系统深色模式与大字体设置，覆盖首页、播放器、选集面板等核心页面。确保不同系统设置下的视觉一致性和可读性，提升无障碍使用体验。</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="insight orange-border" style="margin-top: 8px;">
+    <p><b>体验优化小结：</b>三倍速已在安卓端上线，满足快追需求；看过标记持续降低选集摩擦。<b>深色模式适配</b>进入设计阶段，将覆盖更广泛的使用场景。</p>
+  </div>
+</div>
+
+<!-- ==================== 尾页 ==================== -->
+<div class="slide footer-slide" data-index="14">
+  <div class="slide-num">16 / 16</div>
+  <h2>Thank You</h2>
+  <p>微信短剧生态月报 · 2026年3月 · 数据来源：TDW</p>
+  <p style="margin-top:4px;">微信开放平台 · 小程序数据分析 · 2026.04.09</p>
+</div>
+
+</div><!-- slides-wrapper -->
+
+<script>
+// ===== DATA =====
+const D = ['3/1','3/2','3/3','3/4','3/5','3/6','3/7','3/8','3/9','3/10','3/11','3/12','3/13','3/14','3/15','3/16','3/17','3/18','3/19','3/20','3/21','3/22','3/23','3/24','3/25','3/26','3/27','3/28','3/29','3/30','3/31'];
+
+// 大盘数据 (万)
+const dau=[2313,2449,2245,2308,2308,2237,2204,2274,2201,2173,2125,2091,2226,2348,2269,2236,2309,2463,2193,2085,2097,2193,2121,2310,2266,2288,2368,2197,2400,2375,2453];
+const playPv=[2.59,2.57,2.34,2.38,2.46,2.24,2.16,2.13,2.11,2.11,2.02,2.0,2.1,2.18,2.26,2.16,2.27,2.25,2.15,2.12,2.1,2.2,2.15,2.23,2.19,2.14,2.16,2.11,2.28,2.22,2.25];
+const dur=[8.42,7.7,7.62,7.35,7.67,7.51,7.66,7.28,7.47,7.55,7.43,7.55,7.43,7.31,7.83,7.77,7.88,7.16,7.75,8.26,7.92,8.01,8.05,7.61,7.34,7.13,7.11,7.49,7.43,7.35,7.06];
+const iaaIncome=[1682,1649,1394,1509,1580,1467,1497,1485,1421,1377,1331,1245,1265,1258,1283,1238,1383,1471,1351,1364,1332,1460,1393,1470,1337,1417,1466,1301,1478,1423,1461];
+const adsExp=[13016,13218,11418,11925,12223,11222,10859,10253,10328,10577,10329,10091,11647,11841,11587,11039,11520,12717,10928,10970,11107,12048,11671,13307,11779,12540,12994,11561,13714,13620,13235];
+const ecpm=iaaIncome.map((v,i)=>+(v*10000/adsExp[i]*1000/10000).toFixed(1));
+const vpAmount=[811,756,768,736,729,697,718,743,706,705,660,726,696,704,755,714,719,817,781,712,741,741,670,705,740,701,669,680,704,695,709];
+const vpPv=[48.1,45.6,46.1,45.5,45.1,44.2,43.0,47.9,46.4,44.2,40.4,45.9,43.2,40.8,46.7,46.0,46.1,51.2,48.3,43.8,45.8,46.2,42.3,45.8,47.0,43.6,42.1,43.6,44.0,44.7,46.3];
+const arpu=vpAmount.map((v,i)=>+(v/vpPv[i]).toFixed(1));
+
+// 官小数据 (万)
+const gxDau=[192.9,203.0,230.1,216.9,238.4,240.3,203.1,181.4,165.7,174.6,173.7,184.6,254.4,217.3,216.1,198.0,183.9,197.5,194.6,206.9,227.2,260.1,281.2,271.5,270.4,288.0,324.7,273.7,305.5,275.8,260.0];
+const gxPlayPv=[3893,3851,4063,4179,4666,3838,2855,2537,2492,2600,2511,2667,3881,3347,3291,3184,3043,3290,3093,3256,3648,3948,4068,4118,4054,4326,5009,4032,4644,4560,4570];
+const gxDur=[13.08,12.82,11.39,12.41,12.99,13.52,14.26,14.2,15.38,14.95,14.5,14.6,14.19,14.42,14.37,15.57,15.88,15.68,14.91,14.64,14.41,13.75,13.38,13.96,13.79,13.42,13.35,12.66,13.06,14.65,15.63];
+const gxIaa=[247.2,238.3,258.9,265.6,307.6,267.1,208.4,180.7,171.8,184.7,170.0,179.5,278.5,214.5,221.7,208.2,200.5,217.0,203.9,214.8,248.4,278.8,278.1,280.1,268.5,291.4,341.1,264.8,328.8,306.3,319.9];
+const gxExp=[1990,2004,2157,2221,2514,2185,1618,1384,1359,1421,1334,1455,2411,1916,1893,1858,1710,1870,1757,1843,2173,2419,2513,2525,2476,2668,3162,2398,2908,2820,2743];
+const gxEcpm=gxIaa.map((v,i)=>+(v*10000/gxExp[i]*1000/10000).toFixed(1));
+
+// 端原生数据
+const fdDau=[1.543,1.378,1.374,1.354,1.386,1.39,1.437,1.475,1.383,1.402,1.292,1.318,1.418,1.44,1.432,1.416,1.352,1.335,1.331,1.312,1.345,1.369,1.339,1.368,1.491,1.53,1.546,1.52,1.503,1.532,1.521];
+const fdPlayPv=[20.39,17.88,18.16,17.64,17.78,17.1,17.85,18.71,17.68,17.52,16.74,16.93,19.22,19.56,19.9,19.33,19.51,19.74,19.43,18.98,19.39,20.12,19.79,20.52,22.45,24.46,23.91,23.17,23.64,24.87,24.66];
+const fdDur=[22.01,21.8,22.39,21.64,21.34,19.97,19.95,20.08,20.66,19.96,20.61,20.57,21.62,21.78,22.41,22.23,23.28,23.5,23.04,22.38,21.92,22.48,23.04,23.11,22.37,23.8,22.65,22.09,23.01,23.7,23.36];
+const fdIaa=[1609.6,1583.9,1544.5,1535.9,1661.2,1664.4,1601.4,1478.0,1375.8,1428.3,1427.8,1383.3,1341.1,1327.6,1395.8,1294.8,1293.9,1496.9,1330.2,1302.7,1455.1,1488.6,1432.2,1479.1,1551.2,1913.1,1710.6,1610.3,1668.3,1673.2,1593.3];
+const fdExp=[3.2,3.11,3.06,3.07,3.08,2.97,3.2,3.04,3.01,2.98,2.94,2.86,2.97,2.87,2.92,3.03,3.15,3.32,3.09,3.02,3.09,3.26,3.17,3.09,3.11,3.53,3.66,3.36,3.4,3.61,3.48];
+const fdEcpm=fdIaa.map((v,i)=>+(v*10000/(fdExp[i]*100000000)*1000).toFixed(1));
+const fdInnerDau=[1549.2,1428.2,1435.4,1400.0,1422.3,1383.8,1435.6,1499.9,1422.1,1395.7,1332.5,1327.3,1457.0,1491.8,1505.6,1445.3,1423.5,1426.7,1398.4,1393.9,1439.6,1492.8,1456.2,1482.4,1582.0,1712.6,1685.1,1644.7,1683.0,1773.1,1752.6];
+
+// 留存数据 (%)
+const retainDp=[13.9,13.0,14.0,16.8,17.3,16.1,13.3,14.0,13.8,14.5,13.9,13.4,15.9,13.5,13.7,13.9,13.1,14.7,13.0,14.7,14.4,15.4,13.9,17.1,13.2,18.4,15.2,13.5,12.2,17.9];
+const retainGx=[27.1,28.0,26.4,28.7,27.9,24.7,25.8,25.4,28.4,27.8,29.4,33.9,27.2,28.2,27.2,27.7,30.1,29.2,30.1,30.6,32.2,30.8,28.5,30.2,31.6,31.7,26.9,30.6,28.0,30.7];
+
+// 用户来源
+const srcDpLabels=['广告','内部渠道视频号','(空)','内部跳转','外部跳转','分享','任务栏','微信功能','发现 · 小程序','内部渠道公众号'];
+const srcDpValues=[17544,4393,3649,2167,1857,980,988,341,252,147];
+const srcGxLabels=['广告','内部跳转','发现 · 小程序','任务栏','外部跳转','(空)','微信功能','内部渠道视频号','分享','搜索'];
+const srcGxValues=[2360,333,130,113,109,91,46,27,25,13];
+
+// ===== THEME =====
+const C = {
+  blue:'#1a73e8', green:'#0d9e6c', orange:'#e37400',
+  purple:'#7b61ff', red:'#d93025', grey:'#5f6368',
+  gridLine:'#f0f0f0', axisLabel:'#9aa0a6',
+};
+
+function base() {
+  return {
+    backgroundColor:'transparent',
+    grid:{left:44,right:44,top:28,bottom:24},
+    tooltip:{trigger:'axis',backgroundColor:'#fff',borderColor:'#e8eaed',borderWidth:1,textStyle:{color:'#1a1a2e',fontSize:12},extraCssText:'box-shadow:0 2px 12px rgba(0,0,0,0.08);'},
+    xAxis:{type:'category',data:D,axisLine:{lineStyle:{color:'#e8eaed'}},axisLabel:{color:C.axisLabel,fontSize:10},axisTick:{show:false}}
+  };
+}
+function yAxis(name,opts){
+  return{type:'value',name,nameTextStyle:{color:C.axisLabel,fontSize:10,padding:[0,0,0,-16]},axisLine:{show:false},axisTick:{show:false},splitLine:{lineStyle:{color:C.gridLine,type:'dashed'}},axisLabel:{color:C.axisLabel,fontSize:10},...opts};
+}
+function hexA(hex,a){const r=parseInt(hex.slice(1,3),16),g=parseInt(hex.slice(3,5),16),b=parseInt(hex.slice(5,7),16);return`rgba(${r},${g},${b},${a})`;}
+
+function lineSeries(data,color,opts){
+  return{type:'line',data,smooth:0.3,symbol:'none',lineStyle:{color,width:2.5},areaStyle:{color:{type:'linear',x:0,y:0,x2:0,y2:1,colorStops:[{offset:0,color:hexA(color,0.12)},{offset:1,color:hexA(color,0)}]}},...opts};
+}
+
+// ===== NAV =====
+const slides=document.querySelectorAll('.slide');
+const total=slides.length;
+let initPage=parseInt(location.hash.replace('#',''))||0;
+if(initPage<0||initPage>=total) initPage=0;
+let cur=initPage;
+slides.forEach(s=>s.classList.remove('active'));
+slides[cur].classList.add('active');
+const dots=document.getElementById('navDots');
+for(let i=0;i<total;i++){const d=document.createElement('div');d.className='nav-dot'+(i===cur?' active':'');d.onclick=()=>go(i);dots.appendChild(d);}
+updateTitle();
+
+function updateTitle(){document.getElementById('navTitle').textContent=`微信短剧月报  ${String(cur+1).padStart(2,'0')} / ${String(total).padStart(2,'0')}`;}
+function go(i){slides[cur].classList.remove('active');dots.children[cur].classList.remove('active');cur=i;slides[cur].classList.add('active');dots.children[cur].classList.add('active');updateTitle();location.hash=cur;initChartsForSlide(cur);}
+function nextSlide(){if(cur<total-1)go(cur+1);}
+function prevSlide(){if(cur>0)go(cur-1);}
+document.addEventListener('keydown',e=>{if(e.key==='ArrowRight'||e.key==='ArrowDown'||e.key===' '){e.preventDefault();nextSlide();}if(e.key==='ArrowLeft'||e.key==='ArrowUp'){e.preventDefault();prevSlide();}});
+
+// ===== CHARTS =====
+const allCharts=[];
+const chartInited={};
+function init(id){const el=document.getElementById(id);if(!el)return null;const c=echarts.init(el);allCharts.push(c);return c;}
+
+function initChartsForSlide(idx){
+  if(chartInited[idx]){allCharts.forEach(c=>c.resize());return;}
+  chartInited[idx]=true;
+  const fn={2:initSlide1,3:initSlide2,4:initSlide3,5:initSlide4,6:initSlide5,7:initSlide7,8:initSlide8,9:initSlide9,10:initSlide10,11:initSlide12,12:initSlide13};
+  // Slide index map: 0=封面, 1=PART1, 2~5=活跃+时长, 6=留存对比(合并), 7=虚拟支付, 8~10=广告, 11~12=来源
+  if(fn[idx]) fn[idx]();
+}
+
+// Auto-number all slide-num elements
+slides.forEach((s,i)=>{
+  const numEl=s.querySelector('.slide-num');
+  if(numEl) numEl.textContent=`${String(i+1).padStart(2,'0')} / ${String(total).padStart(2,'0')}`;
+});
+
+// P2 大盘活跃
+function initSlide1(){
+  init('chart-dau')?.setOption({...base(),yAxis:yAxis('万人'),series:[{...lineSeries(dau,C.blue),markLine:{data:[{type:'average',name:'月均'}],lineStyle:{color:hexA(C.blue,0.4),type:'dashed',width:1},label:{position:'insideEndTop',color:C.blue,fontSize:11,formatter:'{c}'},symbol:'none'},markPoint:{data:[{type:'max'},{type:'min'}],symbolSize:32,itemStyle:{color:'#fff',borderColor:C.blue,borderWidth:2},label:{color:C.blue,fontSize:10,fontWeight:600}}}]});
+  init('chart-play')?.setOption({...base(),grid:{left:44,right:44,top:16,bottom:24},yAxis:yAxis('亿'),series:[{type:'bar',data:playPv,barMaxWidth:14,itemStyle:{color:hexA(C.purple,0.65),borderRadius:[3,3,0,0]}}]});
+  init('chart-duration')?.setOption({...base(),grid:{left:44,right:44,top:16,bottom:24},yAxis:yAxis('分钟',{min:6.5}),series:[lineSeries(dur,C.orange)]});
+}
+
+// P3 官小活跃
+function initSlide2(){
+  init('chart-gx-dau')?.setOption({...base(),yAxis:yAxis('万人'),series:[{...lineSeries(gxDau,C.purple),markLine:{data:[{type:'average',name:'月均'}],lineStyle:{color:hexA(C.purple,0.4),type:'dashed',width:1},label:{position:'insideEndTop',color:C.purple,fontSize:11,formatter:'{c}'},symbol:'none'},markPoint:{data:[{type:'max'},{type:'min'}],symbolSize:32,itemStyle:{color:'#fff',borderColor:C.purple,borderWidth:2},label:{color:C.purple,fontSize:10,fontWeight:600}}}]});
+  init('chart-gx-play')?.setOption({...base(),grid:{left:44,right:44,top:16,bottom:24},yAxis:yAxis('万次'),series:[{type:'bar',data:gxPlayPv,barMaxWidth:14,itemStyle:{color:hexA(C.purple,0.55),borderRadius:[3,3,0,0]}}]});
+  init('chart-gx-dur')?.setOption({...base(),grid:{left:44,right:44,top:16,bottom:24},yAxis:yAxis('分钟',{min:10}),series:[lineSeries(gxDur,C.orange)]});
+}
+
+// P4 端原生活跃
+function initSlide3(){
+  init('chart-fd-dau')?.setOption({...base(),grid:{left:44,right:54,top:36,bottom:24},legend:{data:['外层UV','内层UV'],textStyle:{color:C.grey,fontSize:11},top:0,right:0,itemWidth:14,itemHeight:8},yAxis:[yAxis('亿人'),{...yAxis('万人'),splitLine:{show:false}}],series:[{name:'外层UV',...lineSeries(fdDau,C.green),markLine:{data:[{type:'average'}],lineStyle:{color:hexA(C.green,0.4),type:'dashed',width:1},label:{position:'insideEndTop',color:C.green,fontSize:11},symbol:'none'},markPoint:{data:[{type:'max'}],symbolSize:32,itemStyle:{color:'#fff',borderColor:C.green,borderWidth:2},label:{color:C.green,fontSize:10,fontWeight:600}}},{name:'内层UV',type:'line',yAxisIndex:1,data:fdInnerDau,smooth:0.3,symbol:'none',lineStyle:{color:C.orange,width:2},areaStyle:{color:{type:'linear',x:0,y:0,x2:0,y2:1,colorStops:[{offset:0,color:hexA(C.orange,0.1)},{offset:1,color:hexA(C.orange,0)}]}},markLine:{data:[{type:'average'}],lineStyle:{color:hexA(C.orange,0.4),type:'dashed',width:1},label:{position:'insideEndTop',color:C.orange,fontSize:11},symbol:'none'}}]});
+  init('chart-fd-play')?.setOption({...base(),grid:{left:44,right:44,top:16,bottom:24},yAxis:yAxis('亿'),series:[{type:'bar',data:fdPlayPv,barMaxWidth:14,itemStyle:{color:hexA(C.green,0.55),borderRadius:[3,3,0,0]}}]});
+  init('chart-fd-dur')?.setOption({...base(),grid:{left:44,right:44,top:16,bottom:24},yAxis:yAxis('分钟',{min:18}),series:[lineSeries(fdDur,C.green)]});
+}
+
+// P5 时长三端对比
+function initSlide4(){
+  init('chart-dur-dp')?.setOption({...base(),grid:{left:36,right:20,top:16,bottom:24},yAxis:yAxis('',{min:6.5}),series:[lineSeries(dur,C.blue)]});
+  init('chart-dur-gx')?.setOption({...base(),grid:{left:36,right:20,top:16,bottom:24},yAxis:yAxis('',{min:10}),series:[lineSeries(gxDur,C.purple)]});
+  init('chart-dur-fd')?.setOption({...base(),grid:{left:36,right:20,top:16,bottom:24},yAxis:yAxis('',{min:18}),series:[lineSeries(fdDur,C.green)]});
+}
+
+// P6 留存对比（大盘+官小合并，单Y轴）
+function initSlide5(){
+  init('chart-retain-compare')?.setOption({
+    backgroundColor:'transparent',
+    grid:{left:44,right:44,top:36,bottom:24},
+    legend:{data:['大盘次留','官小次留'],textStyle:{color:C.grey,fontSize:11},top:0,right:0,itemWidth:14,itemHeight:8},
+    tooltip:{trigger:'axis',backgroundColor:'#fff',borderColor:'#e8eaed',borderWidth:1,textStyle:{color:'#1a1a2e',fontSize:12},formatter:function(ps){let s=ps[0].axisValue;ps.forEach(p=>{s+='<br/>'+p.marker+p.seriesName+': '+p.value.toFixed(1)+'%';});return s;}},
+    xAxis:{type:'category',data:D.slice(0,retainDp.length),axisLine:{lineStyle:{color:'#e8eaed'}},axisLabel:{color:C.axisLabel,fontSize:10,interval:3},axisTick:{show:false}},
+    yAxis:{type:'value',min:5,max:40,axisLabel:{color:C.axisLabel,fontSize:10,formatter:'{value}%'},splitLine:{lineStyle:{color:C.gridLine,type:'dashed'}}},
+    series:[
+      {name:'大盘次留',type:'line',data:retainDp,smooth:0.3,symbol:'none',lineStyle:{color:C.blue,width:2.5},areaStyle:{color:{type:'linear',x:0,y:0,x2:0,y2:1,colorStops:[{offset:0,color:hexA(C.blue,0.12)},{offset:1,color:hexA(C.blue,0)}]}},
+        markLine:{data:[{type:'average'}],lineStyle:{color:hexA(C.blue,0.4),type:'dashed',width:1},label:{position:'insideEndTop',color:C.blue,fontSize:10,formatter:p=>p.value.toFixed(1)+'%'},symbol:'none'},
+        markPoint:{data:[{type:'max'},{type:'min'}],symbolSize:28,itemStyle:{color:'#fff',borderColor:C.blue,borderWidth:2},label:{color:C.blue,fontSize:9,fontWeight:600,formatter:p=>p.value.toFixed(1)}}},
+      {name:'官小次留',type:'line',data:retainGx,smooth:0.3,symbol:'none',lineStyle:{color:C.purple,width:2.5},areaStyle:{color:{type:'linear',x:0,y:0,x2:0,y2:1,colorStops:[{offset:0,color:hexA(C.purple,0.12)},{offset:1,color:hexA(C.purple,0)}]}},
+        markLine:{data:[{type:'average'}],lineStyle:{color:hexA(C.purple,0.4),type:'dashed',width:1},label:{position:'insideEndTop',color:C.purple,fontSize:10,formatter:p=>p.value.toFixed(1)+'%'},symbol:'none'},
+        markPoint:{data:[{type:'max'},{type:'min'}],symbolSize:28,itemStyle:{color:'#fff',borderColor:C.purple,borderWidth:2},label:{color:C.purple,fontSize:9,fontWeight:600,formatter:p=>p.value.toFixed(1)}}}
+    ]
+  });
+}
+
+// P8 虚拟支付
+function initSlide7(){
+  init('chart-gmv')?.setOption({...base(),yAxis:yAxis('万元'),series:[{...lineSeries(vpAmount,C.orange),markLine:{data:[{type:'average'}],lineStyle:{color:hexA(C.orange,0.4),type:'dashed',width:1},label:{position:'insideEndTop',color:C.orange,fontSize:11},symbol:'none'},markPoint:{data:[{type:'max'}],symbolSize:32,itemStyle:{color:'#fff',borderColor:C.orange,borderWidth:2},label:{color:C.orange,fontSize:10,fontWeight:600}}}]});
+  init('chart-orders')?.setOption({...base(),grid:{left:44,right:44,top:16,bottom:24},yAxis:yAxis('万笔'),series:[{type:'bar',data:vpPv,barMaxWidth:14,itemStyle:{color:hexA(C.orange,0.55),borderRadius:[3,3,0,0]}}]});
+  init('chart-arpu')?.setOption({...base(),grid:{left:44,right:44,top:16,bottom:24},yAxis:yAxis('元',{min:14}),series:[lineSeries(arpu,C.orange)]});
+}
+
+// P9 大盘广告
+function initSlide8(){
+  init('chart-iaa-dp')?.setOption({...base(),yAxis:yAxis('万元'),series:[{...lineSeries(iaaIncome,C.green),markLine:{data:[{type:'average'}],lineStyle:{color:hexA(C.green,0.4),type:'dashed',width:1},label:{position:'insideEndTop',color:C.green,fontSize:11},symbol:'none'},markPoint:{data:[{type:'max'},{type:'min'}],symbolSize:32,itemStyle:{color:'#fff',borderColor:C.green,borderWidth:2},label:{color:C.green,fontSize:10,fontWeight:600}}}]});
+  init('chart-exp-dp')?.setOption({...base(),grid:{left:44,right:44,top:16,bottom:24},yAxis:yAxis('万次'),series:[{type:'bar',data:adsExp,barMaxWidth:14,itemStyle:{color:hexA(C.blue,0.55),borderRadius:[3,3,0,0]}}]});
+  init('chart-ecpm-dp')?.setOption({...base(),grid:{left:44,right:44,top:16,bottom:24},yAxis:yAxis('',{min:100}),series:[lineSeries(ecpm,C.orange)]});
+}
+
+// P10 官小广告
+function initSlide9(){
+  init('chart-iaa-gx')?.setOption({...base(),yAxis:yAxis('万元'),series:[{...lineSeries(gxIaa,C.purple),markLine:{data:[{type:'average'}],lineStyle:{color:hexA(C.purple,0.4),type:'dashed',width:1},label:{position:'insideEndTop',color:C.purple,fontSize:11},symbol:'none'},markPoint:{data:[{type:'max'}],symbolSize:32,itemStyle:{color:'#fff',borderColor:C.purple,borderWidth:2},label:{color:C.purple,fontSize:10,fontWeight:600}}}]});
+  init('chart-exp-gx')?.setOption({...base(),grid:{left:44,right:44,top:16,bottom:24},yAxis:yAxis('万次'),series:[{type:'bar',data:gxExp,barMaxWidth:14,itemStyle:{color:hexA(C.purple,0.55),borderRadius:[3,3,0,0]}}]});
+  init('chart-ecpm-gx')?.setOption({...base(),grid:{left:44,right:44,top:16,bottom:24},yAxis:yAxis('',{min:80}),series:[lineSeries(gxEcpm,C.orange)]});
+}
+
+// P11 端原生广告
+function initSlide10(){
+  init('chart-iaa-fd')?.setOption({...base(),yAxis:yAxis('万元'),series:[{...lineSeries(fdIaa,C.green),markLine:{data:[{type:'average'}],lineStyle:{color:hexA(C.green,0.4),type:'dashed',width:1},label:{position:'insideEndTop',color:C.green,fontSize:11},symbol:'none'},markPoint:{data:[{type:'max'},{type:'min'}],symbolSize:32,itemStyle:{color:'#fff',borderColor:C.green,borderWidth:2},label:{color:C.green,fontSize:10,fontWeight:600}}}]});
+  init('chart-exp-fd')?.setOption({...base(),grid:{left:44,right:44,top:16,bottom:24},yAxis:yAxis('亿'),series:[{type:'bar',data:fdExp,barMaxWidth:14,itemStyle:{color:hexA(C.blue,0.55),borderRadius:[3,3,0,0]}}]});
+  init('chart-ecpm-fd')?.setOption({...base(),grid:{left:44,right:44,top:16,bottom:24},yAxis:yAxis('',{min:30}),series:[lineSeries(fdEcpm,C.orange)]});
+}
+
+// P13 大盘来源
+function initSlide12(){
+  init('chart-source-dp')?.setOption({backgroundColor:'transparent',grid:{left:200,right:80,top:16,bottom:24},tooltip:{trigger:'axis',backgroundColor:'#fff',borderColor:'#e8eaed',borderWidth:1,textStyle:{color:'#1a1a2e',fontSize:12}},xAxis:{type:'value',axisLine:{lineStyle:{color:'#e8eaed'}},axisLabel:{color:C.axisLabel,fontSize:10,formatter:v=>v>=10000?(v/10000).toFixed(0)+'亿':(v>=100?v+'万':v)},splitLine:{lineStyle:{color:C.gridLine,type:'dashed'}}},yAxis:{type:'category',data:[...srcDpLabels].reverse(),axisLine:{lineStyle:{color:'#e8eaed'}},axisLabel:{color:C.grey,fontSize:11},axisTick:{show:false}},series:[{type:'bar',data:[...srcDpValues].reverse(),barMaxWidth:18,itemStyle:{color:hexA(C.blue,0.65),borderRadius:[0,4,4,0]},label:{show:true,position:'right',fontSize:10,color:C.grey,formatter:p=>{const v=p.value;return v>=10000?(v/10000).toFixed(2)+'亿':v+'万';}}}]});
+}
+
+// P14 官小来源
+function initSlide13(){
+  init('chart-source-gx')?.setOption({backgroundColor:'transparent',grid:{left:120,right:80,top:16,bottom:24},tooltip:{trigger:'axis',backgroundColor:'#fff',borderColor:'#e8eaed',borderWidth:1,textStyle:{color:'#1a1a2e',fontSize:12}},xAxis:{type:'value',axisLine:{lineStyle:{color:'#e8eaed'}},axisLabel:{color:C.axisLabel,fontSize:10,formatter:v=>v+'万'},splitLine:{lineStyle:{color:C.gridLine,type:'dashed'}}},yAxis:{type:'category',data:[...srcGxLabels].reverse(),axisLine:{lineStyle:{color:'#e8eaed'}},axisLabel:{color:C.grey,fontSize:11},axisTick:{show:false}},series:[{type:'bar',data:[...srcGxValues].reverse(),barMaxWidth:18,itemStyle:{color:hexA(C.purple,0.65),borderRadius:[0,4,4,0]},label:{show:true,position:'right',fontSize:10,color:C.grey,formatter:p=>p.value+'万'}}]});
+}
+
+// Init
+initChartsForSlide(cur);
+window.addEventListener('resize',()=>allCharts.forEach(c=>c.resize()));
+</script>
+</body>
+</html>
