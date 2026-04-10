@@ -756,7 +756,7 @@
     <div class="analysis-box">
       <strong>大盘渠道分析：</strong>大盘以<span class="highlight">AMS广告</span>为主，占比<span class="highlight">58.1%</span>，
       视频号渠道占比<span class="highlight">12.6%</span>。外部跳转渠道本周UV<span class="highlight">791w</span>，环比+19.5%。
-      <br><strong>外部渠道分析：</strong>外部跳转渠道中<span class="highlight">小米浏览器</span>居首，<span class="highlight">OPPO浏览器</span>、<span class="highlight">HMS Core</span>等手机厂商渠道表现突出。<span class="highlight">抖音短视频</span>本周流量持续。</div>
+      <br><strong>外部渠道分析：</strong>外部跳转渠道中<span class="highlight">小米浏览器</span>（120w）居首，<span class="highlight">抖音短视频</span>（114w）次之，<span class="highlight">HMS Core</span>（101w）、<span class="highlight">OPPO浏览器</span>（93w）紧随其后。<span class="highlight">荣耀负一屏</span>本周大幅增长至62w（环比+170%），值得关注。</div>
   </div>
 
 
@@ -1371,19 +1371,19 @@ const chartTheme = {
 // ============ 外部渠道 Pie ============
 (function(){
   const extSourceData = [
-    {name:'抖音短视频', value:1334315},
-    {name:'小米浏览器', value:879638},
-    {name:'OPPO浏览器', value:877564},
-    {name:'HMS Core', value:764214},
-    {name:'荣耀负一屏', value:208842},
-    {name:'红果短剧', value:191204},
-    {name:'今日头条', value:163948},
-    {name:'小米视频', value:158547},
-    {name:'Breeno速览', value:125842},
-    {name:'百度', value:125648},
-    {name:'七猫免费小说', value:122241},
-    {name:'火山小视频', value:96414},
-    {name:'其他', value:698259}
+    {name:'小米浏览器', value:1202437},
+    {name:'抖音短视频', value:1142533},
+    {name:'HMS Core', value:1009156},
+    {name:'OPPO浏览器', value:932310},
+    {name:'荣耀负一屏', value:621808},
+    {name:'小米视频', value:207701},
+    {name:'美团', value:173687},
+    {name:'七猫免费小说', value:163008},
+    {name:'今日头条', value:160485},
+    {name:'百度', value:159171},
+    {name:'红果短剧', value:153916},
+    {name:'Breeno速览', value:143902},
+    {name:'其他', value:1840955}
   ];
   const chart = echarts.init(document.getElementById('chart-ext-source-pie'));
   const colors = ['#f87171','#fb923c','#fbbf24','#34d399','#5b8def','#7c5cfc','#38bdf8','#f472b6','#a78bfa','#e879f9','#94a3b8','#c084fc','#8b8fa3'];
@@ -1406,9 +1406,9 @@ const chartTheme = {
 
 // ============ 外部渠道 Bar comparison ============
 (function(){
-  const channels = ['抖音短视频','小米浏览器','OPPO浏览器','HMS Core','荣耀负一屏','红果短剧','今日头条','小米视频','Breeno速览','百度','七猫免费小说','火山小视频'];
-  const thisWeek = [1334315,879638,877564,764214,208842,191204,163948,158547,125842,125648,122241,96414];
-  const lastWeek = [1303750,877993,1067011,863633,215600,207350,168042,168869,140253,189544,115175,107530];
+  const channels = ['小米浏览器','抖音短视频','HMS Core','OPPO浏览器','荣耀负一屏','小米视频','美团','七猫免费小说','今日头条','百度','红果短剧','Breeno速览'];
+  const thisWeek = [1202437,1142533,1009156,932310,621808,207701,173687,163008,160485,159171,153916,143902];
+  const lastWeek = [1128637,973443,818173,893360,230107,186390,160114,131262,142780,134996,196557,139127];
   const chart = echarts.init(document.getElementById('chart-ext-source-bar'));
   chart.setOption({
     ...chartTheme,
