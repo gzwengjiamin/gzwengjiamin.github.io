@@ -679,16 +679,11 @@
         <div class="kpi-change up"><span class="arrow">&#9650;</span> 环比 +11.2%</div>
       </div>
     </div>
-    <div class="kpi-grid" style="grid-template-columns: repeat(3,1fr);">
+    <div class="kpi-grid" style="grid-template-columns: repeat(2,1fr);">
       <div class="kpi-card">
-        <div class="kpi-label">外→中 转化率</div>
-        <div class="kpi-value" style="color:var(--orange);">17.1%</div>
-        <div class="kpi-change" style="color:var(--text-muted);">中间页DAU / 外层DAU</div>
-      </div>
-      <div class="kpi-card">
-        <div class="kpi-label">中→里 转化率</div>
-        <div class="kpi-value" style="color:var(--orange);">64.6%</div>
-        <div class="kpi-change" style="color:var(--text-muted);">里层DAU / 中间页DAU</div>
+        <div class="kpi-label">外→里 转化率</div>
+        <div class="kpi-value" style="color:var(--orange);">11.1%</div>
+        <div class="kpi-change" style="color:var(--text-muted);">里层DAU / 外层DAU</div>
       </div>
       <div class="kpi-card">
         <div class="kpi-label">日均IAA收入</div>
@@ -1142,8 +1137,8 @@ const chartTheme = {
 
 // ============ CPS挂载 Chart 4: 次日留存 ============
 (function(){
-  const retainData = dailyData.filter(d=>d.ds<='03.25').map(d => d.shDau > 0 && d.shRetain > 0 ? Math.round(d.shRetain / d.shDau * 10000) / 100 : null);
-  const retainDates = dailyData.filter(d=>d.ds<='03.25').map(d=>d.ds);
+  const retainData = dailyData.filter(d=>d.ds<='04.08').map(d => d.shDau > 0 && d.shRetain > 0 ? Math.round(d.shRetain / d.shDau * 10000) / 100 : null);
+  const retainDates = dailyData.filter(d=>d.ds<='04.08').map(d=>d.ds);
   const chart = echarts.init(document.getElementById('chart-cps-retain'));
   chart.setOption({
     ...chartTheme,
@@ -1172,7 +1167,7 @@ const chartTheme = {
 // ============ 视频号端原生 Chart 1: DAU ============
 (function(){
   const finderDates = ['03.03','03.04','03.05','03.06','03.07','03.08','03.09','03.10','03.11','03.12','03.13','03.14','03.15','03.16','03.17','03.18','03.19','03.20','03.21','03.22','03.23','03.24','03.25','03.26','03.27','03.28','03.29','03.30','03.31','04.01','04.02'];
-  const outerDau = [137429440,135408168,138568862,139038350,143724513,147534238,138291144,140249183,129201033,131832921,141756422,144007997,143230305,141588926,135209173,133536904,133054695,131170064,134488083,136859666,133883905,136815619,149110362,153026893,154568045,151973317,150290135,153197428,152126221,148384694,null];
+  const outerDau = [137429440,135408168,138568862,139038350,143724513,147534238,138291144,140249183,129201033,131832921,141756422,144007997,143230305,141588926,135209173,133536904,133054695,131170064,134488083,136859666,133883905,136815619,149110362,153026893,154568045,151973317,150290135,153197428,152126221,148384694,147729781];
   const midDau = [21765422,21303564,21672804,21334941,22131384,23143282,22010632,21649613,20562285,20499429,22492595,23033398,23148179,22305330,22058277,22081874,21452721,21443598,22390315,23254924,21935208,22796638,24343922,26060650,25835089,25457046,25993834,27563095,27195154,24991386,24870226];
   const innerDau = [14353749,13999568,14223350,13838104,14355885,14999482,14221432,13956774,13324561,13272960,14570130,14918060,15056323,14452937,14234989,14266974,13984291,13938520,14396414,14928422,14561929,14823647,15819509,17126195,16850994,16447359,16829543,17730630,17526396,16018705,16048405];
   const chart = echarts.init(document.getElementById('chart-finder-dau'));
@@ -1213,9 +1208,9 @@ const chartTheme = {
 // ============ 视频号端原生 Chart 2: IAA收入趋势 ============
 (function(){
   const finderDates = ['03.03','03.04','03.05','03.06','03.07','03.08','03.09','03.10','03.11','03.12','03.13','03.14','03.15','03.16','03.17','03.18','03.19','03.20','03.21','03.22','03.23','03.24','03.25','03.26','03.27','03.28','03.29','03.30','03.31','04.01','04.02'];
-  const iaaYuan = [15444650.01,15358586.76,16612049.05,16643619.72,16013736.80,14780438.70,13757634.69,14283435.56,14277839.70,13833226.17,13411417.12,13276441.47,13958106.04,12948124.52,12939236.75,14968808.76,13302341.30,13027038.24,14551427.77,14885700.30,14322305.67,14791172.52,15512160.50,19131136.67,17105602.27,16102708.27,16682850.30,16732107.14,15933254.77,13409154.91,null];
+  const iaaYuan = [15444650.01,15358586.76,16612049.05,16643619.72,16013736.80,14780438.70,13757634.69,14283435.56,14277839.70,13833226.17,13411417.12,13276441.47,13958106.04,12948124.52,12939236.75,14968808.76,13302341.30,13027038.24,14551427.77,14885700.30,14322305.67,14791172.52,15512160.50,19131136.67,17105602.27,16102708.27,16682850.30,16732107.14,15933254.77,13409154.91,14297918.41];
   const iaaWan = iaaYuan.map(v => Math.round(v / 10000));
-  const expPv = [305740240,306608123,308463224,296713695,320062697,304067575,301239933,298084109,294099589,285960143,297031949,286804553,291685392,302806504,314941271,331522413,309088022,302464270,309257546,326169896,317340613,309413153,311189808,353023783,365993132,336442306,339724929,360821169,347746324,301148602,null];
+  const expPv = [305740240,306608123,308463224,296713695,320062697,304067575,301239933,298084109,294099589,285960143,297031949,286804553,291685392,302806504,314941271,331522413,309088022,302464270,309257546,326169896,317340613,309413153,311189808,353023783,365993132,336442306,339724929,360821169,347746324,301148602,310503567];
   const ecpm = iaaYuan.map((v,i) => expPv[i] > 0 ? Math.round(v / expPv[i] * 1000 * 10) / 10 : 0);
   const chart = echarts.init(document.getElementById('chart-finder-iaa'));
   chart.setOption({
@@ -1617,11 +1612,11 @@ const chartTheme = {
 
 // ============ 官小 Chart 3: 次日留存（含新用户） ============
 (function(){
-  const gxRetainData = dailyData.filter(d=>d.ds<='03.25').map(d => d.gxDau > 0 && d.gxRetain > 0 ? Math.round(d.gxRetain / d.gxDau * 10000) / 100 : null);
+  const gxRetainData = dailyData.filter(d=>d.ds<='04.08').map(d => d.gxDau > 0 && d.gxRetain > 0 ? Math.round(d.gxRetain / d.gxDau * 10000) / 100 : null);
   // 新用户次日留存率（真实SQL数据，来源：dws_wxapp_short_moive_key_action_scene_applabel_dramalabel_day_di，is_play_old_user=0）
   const gxNewRetainRealData = {};
-  const gxNewRetainData = dailyData.filter(d=>d.ds<='03.25').map(d => gxNewRetainRealData[d.ds] != null ? gxNewRetainRealData[d.ds] : null);
-  const retainDates = dailyData.filter(d=>d.ds<='03.25').map(d=>d.ds);
+  const gxNewRetainData = dailyData.filter(d=>d.ds<='04.08').map(d => gxNewRetainRealData[d.ds] != null ? gxNewRetainRealData[d.ds] : null);
+  const retainDates = dailyData.filter(d=>d.ds<='04.08').map(d=>d.ds);
   const chart = echarts.init(document.getElementById('chart-official-retain'));
   chart.setOption({
     ...chartTheme,
