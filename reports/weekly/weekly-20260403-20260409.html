@@ -798,9 +798,9 @@
     </div>
     <div class="analysis-box">
       <strong>商户GMV分析：</strong>
-      <span class="highlight">番茄</span>以日均GMV <span class="highlight">421.6w</span>占据主导地位（环比-14.6%）；
-      <span class="highlight">九州</span>日均GMV <span class="highlight">62.8w</span>排名第二（环比-21.7%）；
-      <span class="highlight">点众</span>日均GMV <span class="highlight">50.1w</span>第三（环比-32.5%）。</div>
+      <span class="highlight">番茄</span>以日均GMV <span class="highlight">436.2w</span>占据主导地位（环比-10.7%）；
+      <span class="highlight">九州</span>日均GMV <span class="highlight">84.7w</span>排名第二（环比+10.6%）；
+      <span class="highlight">点众</span>日均GMV <span class="highlight">34.3w</span>第三（环比-39.2%）。</div>
   </div>
 
   <!-- ==================== Page 8: Top30 剧目排行 ==================== -->
@@ -1486,8 +1486,8 @@ const chartTheme = {
 
 // ============ Chart: Company GMV Bar ============
 (function(){
-  const companies = ['番茄','九州','点众','掌阅','麦芽'];
-  const thisW = [428.3,72.9,58.7,14.5,8.1];
+  const companies = ['番茄','九州','点众','麦芽','花笙'];
+  const thisW = [436.2,84.7,34.3,6.3,5.1];
   const total = thisW.reduce((a,b)=>a+b,0);
   const chart = echarts.init(document.getElementById('chart-company-gmv-bar'));
   chart.setOption({
@@ -1516,8 +1516,8 @@ const chartTheme = {
 
 // ============ Chart: Company GMV Change ============
 (function(){
-  const companies = ['番茄','九州','点众','掌阅','麦芽'];
-  const changes = [-20.9,8.5,-17.0,731.2,2.0];
+  const companies = ['番茄','九州','点众','麦芽','花笙'];
+  const changes = [-10.7,10.6,-39.2,-27.6,-32.0];
   const chart = echarts.init(document.getElementById('chart-company-gmv-change'));
   chart.setOption({
     ...chartTheme,
