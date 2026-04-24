@@ -974,6 +974,11 @@ const chartTheme = {
       { name:'大盘IAA', type:'line', data:dailyData.map(d=>d.iaa), smooth:true, yAxisIndex:0,
         lineStyle:{color:'#34d399',width:2.5}, itemStyle:{color:'#34d399'},
         areaStyle:{color:new echarts.graphic.LinearGradient(0,0,0,1,[{offset:0,color:'rgba(52,211,153,0.2)'},{offset:1,color:'rgba(52,211,153,0)'}])},
+        markLine: {
+          silent: true, symbol: 'none',
+          lineStyle: { color: '#f87171', type: 'dashed', width: 1 },
+          data: [{ xAxis: '04.16', label: { formatter: '本周起点', color:'#f87171', fontSize:11 } }]
+        }
       },
       { name:'ECPM', type:'line', data:ecpmData, smooth:true, yAxisIndex:1,
         lineStyle:{color:'#5b8def',width:2,type:'dashed'}, itemStyle:{color:'#5b8def'},
@@ -1012,6 +1017,11 @@ const chartTheme = {
           borderRadius:[4,4,0,0]
         },
         barMaxWidth: 32,
+        markLine: {
+          silent: true, symbol: 'none',
+          lineStyle: { color: '#f87171', type: 'dashed', width: 1 },
+          data: [{ xAxis: '04.16', label: { formatter: '本周起点', color:'#f87171', fontSize:11 } }]
+        }
       },
       { name:'客单价', type:'line', data:priceData, smooth:true, yAxisIndex:1,
         lineStyle:{color:'#f472b6',width:2,type:'dashed'}, itemStyle:{color:'#f472b6'},
@@ -1087,6 +1097,11 @@ const chartTheme = {
       { name:'IAA收入', type:'line', data:dailyData.map(d=>d.shIaa), smooth:true, yAxisIndex:0,
         lineStyle:{color:'#34d399',width:2.5}, itemStyle:{color:'#34d399'},
         areaStyle:{color:new echarts.graphic.LinearGradient(0,0,0,1,[{offset:0,color:'rgba(52,211,153,0.25)'},{offset:1,color:'rgba(52,211,153,0)'}])},
+        markLine: {
+          silent: true, symbol: 'none',
+          lineStyle: { color: '#f87171', type: 'dashed', width: 1 },
+          data: [{ xAxis: '04.16', label: { formatter: '本周起点', color:'#f87171', fontSize:11 } }]
+        }
       },
       { name:'ECPM', type:'line', data:cpsEcpm, smooth:true, yAxisIndex:1,
         lineStyle:{color:'#5b8def',width:2,type:'dashed'}, itemStyle:{color:'#5b8def'},
@@ -1122,6 +1137,11 @@ const chartTheme = {
       { name:'虚拟支付收入', type:'line', data:dailyData.map(d=>d.shIap), smooth:true, yAxisIndex:0,
         lineStyle:{color:'#fbbf24',width:2.5}, itemStyle:{color:'#fbbf24'},
         areaStyle:{color:new echarts.graphic.LinearGradient(0,0,0,1,[{offset:0,color:'rgba(251,191,36,0.25)'},{offset:1,color:'rgba(251,191,36,0)'}])},
+        markLine: {
+          silent: true, symbol: 'none',
+          lineStyle: { color: '#f87171', type: 'dashed', width: 1 },
+          data: [{ xAxis: '04.16', label: { formatter: '本周起点', color:'#f87171', fontSize:11 } }]
+        }
       },
       { name:'客单价', type:'line', data:cpsPriceData, smooth:true, yAxisIndex:1,
         lineStyle:{color:'#f87171',width:2,type:'dashed'}, itemStyle:{color:'#f87171'},
@@ -1597,6 +1617,11 @@ const chartTheme = {
       { name:'IAA收入', type:'line', data:dailyData.map(d=>d.gxIaa), smooth:true, yAxisIndex:0,
         lineStyle:{color:'#34d399',width:2.5}, itemStyle:{color:'#34d399'},
         areaStyle:{color:new echarts.graphic.LinearGradient(0,0,0,1,[{offset:0,color:'rgba(52,211,153,0.25)'},{offset:1,color:'rgba(52,211,153,0)'}])},
+        markLine: {
+          silent: true, symbol: 'none',
+          lineStyle: { color: '#f87171', type: 'dashed', width: 1 },
+          data: [{ xAxis: '04.16', label: { formatter: '本周起点', color:'#f87171', fontSize:11 } }]
+        }
       },
       { name:'ECPM', type:'line', data:gxEcpm, smooth:true, yAxisIndex:1,
         lineStyle:{color:'#5b8def',width:2,type:'dashed'}, itemStyle:{color:'#5b8def'},
