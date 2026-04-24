@@ -491,8 +491,8 @@
     </div>
     <div class="analysis-box">
       <strong>核心分析：</strong>本周大盘IAA变现日均<span class="highlight">1605w</span>，环比<span class="highlight">-3.0%</span>。
-      <span class="highlight">腾讯</span>日均IAA收入<span class="highlight">302.2w</span>，占比总IAA的18.8%；
-      <span class="highlight">番茄</span>日均164w排名第二，<span class="highlight">九州</span>日均120.1w排名第三。
+      <span class="highlight">腾讯</span>日均IAA收入<span class="highlight">416.9w</span>，占比总IAA的26.0%；
+      <span class="highlight">番茄</span>日均247w排名第二，<span class="highlight">九州</span>日均168.9w排名第三。
       <br><strong>ECPM趋势：</strong>大盘日均ECPM为<span class="highlight">126.1元</span>，环比+0.8%。</div>
   </div>
 
@@ -769,11 +769,11 @@
     </div>
     <div class="analysis-box">
       <strong>商户分析：</strong>
-      <span class="highlight">腾讯</span>以日均IAA收入<span class="highlight">302.2w</span>稳居第一（环比-9.2%）；
-      <span class="highlight">番茄</span>以日均IAA收入<span class="highlight">164w</span>排名第二（环比-53.3%）；
-      <span class="highlight">九州</span>以日均IAA收入<span class="highlight">120.1w</span>第三（环比-8.4%）；
-      <span class="highlight">掌读</span>以日均IAA收入<span class="highlight">98.6w</span>第四（环比-31.6%）；
-      <span class="highlight">麦芽</span>以日均IAA收入<span class="highlight">39.6w</span>第五（环比-17.0%）。</div>
+      <span class="highlight">腾讯</span>以日均IAA收入<span class="highlight">416.9w</span>稳居第一（环比+30.8%）；
+      <span class="highlight">番茄</span>以日均IAA收入<span class="highlight">247w</span>排名第二（环比-30.2%）；
+      <span class="highlight">九州</span>以日均IAA收入<span class="highlight">168.9w</span>第三（环比+40.0%）；
+      <span class="highlight">掌读</span>以日均IAA收入<span class="highlight">139.6w</span>第四（环比-6.5%）；
+      <span class="highlight">麦芽</span>以日均IAA收入<span class="highlight">57.1w</span>第五（环比+26.0%）。</div>
   </div>
 
   <!-- ==================== 各商户GMV排名 ==================== -->
@@ -791,9 +791,9 @@
     </div>
     <div class="analysis-box">
       <strong>商户GMV分析：</strong>
-      <span class="highlight">番茄</span>以日均GMV <span class="highlight">244.4w</span>占据主导地位（环比-39.5%）；
-      <span class="highlight">九州</span>日均GMV <span class="highlight">121.8w</span>排名第二（环比-6.9%）；
-      <span class="highlight">点众</span>日均GMV <span class="highlight">90.4w</span>第三（环比+34.5%）。</div>
+      <span class="highlight">番茄</span>以日均GMV <span class="highlight">346w</span>占据主导地位（环比-19.1%）；
+      <span class="highlight">九州</span>日均GMV <span class="highlight">176.4w</span>排名第二（环比+44.6%）；
+      <span class="highlight">点众</span>日均GMV <span class="highlight">113.1w</span>第三（环比+80.1%）。</div>
   </div>
 
   <!-- ==================== Page 8: Top30 剧目排行 ==================== -->
@@ -1439,7 +1439,7 @@ const chartTheme = {
 // ============ Chart 8: Company Bar ============
 (function(){
   const companies = ['腾讯','番茄','九州','掌读','麦芽','360','花笙','掌阅','容量','咪咕'];
-  const thisW = [302.2,164,120.1,98.6,39.6,39,31.2,28,25.3,15.6];
+  const thisW = [416.9,247,168.9,139.6,57.1,56.4,45,39.3,35.9,21.8];
   const chart = echarts.init(document.getElementById('chart-company-bar'));
   chart.setOption({
     ...chartTheme,
@@ -1468,7 +1468,7 @@ const chartTheme = {
 // ============ Chart 9: Company Change ============
 (function(){
   const companies = ['腾讯','番茄','九州','掌读','麦芽','360','花笙','掌阅','容量','咪咕'];
-  const changes = [-9.2,-53.3,-8.4,-31.6,-17,9,-36.9,-13.4,-19.1,null];
+  const changes = [30.8,-30.2,40,-6.5,26,83,-11.1,31.3,7.8,null];
   const chart = echarts.init(document.getElementById('chart-company-change'));
   chart.setOption({
     ...chartTheme,
@@ -1493,8 +1493,8 @@ const chartTheme = {
 
 // ============ Chart: Company GMV Bar ============
 (function(){
-  const companies = ['番茄','九州','点众','花笙','掌阅','麦芽','鑫诺','爱阅','映客快创','欢聚'];
-  const thisW = [244.4,121.8,90.4,5.5,4.8,4.1,2.1,1.3,0.3,0.3];
+  const companies = ['番茄','九州','点众','花笙','掌阅','麦芽','鑫诺','爱阅','欢聚','映客快创'];
+  const thisW = [346,176.4,113.1,8.1,7.4,6.3,3,2.2,0.9,0.4];
   const total = thisW.reduce((a,b)=>a+b,0);
   const chart = echarts.init(document.getElementById('chart-company-gmv-bar'));
   chart.setOption({
@@ -1523,8 +1523,8 @@ const chartTheme = {
 
 // ============ Chart: Company GMV Change ============
 (function(){
-  const companies = ['番茄','九州','点众','花笙','掌阅','麦芽','鑫诺','爱阅','映客快创','欢聚'];
-  const changes = [-39.5,-6.9,34.5,-34.6,-70.4,-40.1,-48.9,-35.5,null,-66.3];
+  const companies = ['番茄','九州','点众','花笙','掌阅','麦芽','鑫诺','爱阅','欢聚','映客快创'];
+  const changes = [-19.1,44.6,80.1,6.2,-50.9,-3,-29.4,72.3,null,null];
   const chart = echarts.init(document.getElementById('chart-company-gmv-change'));
   chart.setOption({
     ...chartTheme,
