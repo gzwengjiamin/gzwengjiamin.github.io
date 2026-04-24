@@ -1,0 +1,1717 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>短剧周报 2026.04.16 - 2026.04.22</title>
+<script src="./echarts.min.js"></script>
+<style>
+  :root {
+    --bg: #0f1117;
+    --card: #1a1d2e;
+    --card-border: #2a2d3e;
+    --text: #e8e8e8;
+    --text-muted: #8b8fa3;
+    --accent: #5b8def;
+    --accent2: #7c5cfc;
+    --green: #34d399;
+    --red: #f87171;
+    --orange: #fbbf24;
+    --gradient1: linear-gradient(135deg, #5b8def 0%, #7c5cfc 100%);
+    --gradient2: linear-gradient(135deg, #34d399 0%, #5b8def 100%);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+  }
+
+  .container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 32px 24px;
+  }
+
+  /* Header */
+  .header {
+    text-align: center;
+    margin-bottom: 40px;
+    padding: 48px 0 32px;
+    background: linear-gradient(180deg, rgba(91,141,239,0.08) 0%, transparent 100%);
+    border-radius: 24px;
+  }
+  .header h1 {
+    font-size: 36px;
+    font-weight: 700;
+    background: var(--gradient1);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 8px;
+  }
+  .header .subtitle {
+    font-size: 16px;
+    color: var(--text-muted);
+  }
+  .header .date-range {
+    display: inline-block;
+    margin-top: 12px;
+    padding: 6px 20px;
+    background: rgba(91,141,239,0.12);
+    border: 1px solid rgba(91,141,239,0.25);
+    border-radius: 20px;
+    font-size: 14px;
+    color: var(--accent);
+  }
+
+  /* Section */
+  .section {
+    margin-bottom: 40px;
+  }
+  .section-title {
+    font-size: 22px;
+    font-weight: 600;
+    margin-bottom: 20px;
+    padding-left: 16px;
+    border-left: 4px solid var(--accent);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .section-title .badge {
+    font-size: 12px;
+    padding: 2px 10px;
+    border-radius: 10px;
+    background: rgba(91,141,239,0.15);
+    color: var(--accent);
+    font-weight: 500;
+  }
+
+  /* KPI Cards */
+  .kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+  .kpi-card {
+    background: var(--card);
+    border: 1px solid var(--card-border);
+    border-radius: 16px;
+    padding: 24px;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .kpi-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+  }
+  .kpi-label {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .kpi-value {
+    font-size: 32px;
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+  .kpi-change {
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .kpi-change.up { color: var(--green); }
+  .kpi-change.down { color: var(--red); }
+  .kpi-change .arrow { font-size: 16px; }
+
+  /* Chart container */
+  .chart-card {
+    background: var(--card);
+    border: 1px solid var(--card-border);
+    border-radius: 16px;
+    padding: 24px;
+    margin-bottom: 20px;
+  }
+  .chart-card .chart-title {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 16px;
+    color: var(--text);
+  }
+  .chart-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+
+  /* Analysis box */
+  .analysis-box {
+    background: rgba(91,141,239,0.06);
+    border: 1px solid rgba(91,141,239,0.15);
+    border-radius: 12px;
+    padding: 16px 20px;
+    margin-top: 16px;
+    font-size: 14px;
+    line-height: 1.8;
+    color: var(--text-muted);
+  }
+  .analysis-box strong {
+    color: var(--text);
+  }
+  .analysis-box .highlight {
+    color: var(--accent);
+    font-weight: 600;
+  }
+
+  /* Table */
+  .data-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    font-size: 13px;
+  }
+  .data-table thead th {
+    background: rgba(91,141,239,0.1);
+    color: var(--accent);
+    padding: 12px 16px;
+    text-align: left;
+    font-weight: 600;
+    position: sticky;
+    top: 0;
+    white-space: nowrap;
+  }
+  .data-table thead th:first-child { border-radius: 10px 0 0 0; }
+  .data-table thead th:last-child { border-radius: 0 10px 0 0; }
+  .data-table tbody tr {
+    transition: background 0.15s;
+  }
+  .data-table tbody tr:hover {
+    background: rgba(91,141,239,0.05);
+  }
+  .data-table tbody td {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--card-border);
+    white-space: nowrap;
+  }
+  .data-table .rank {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 13px;
+  }
+  .rank-1 { background: linear-gradient(135deg, #fbbf24, #f59e0b); color: #000; }
+  .rank-2 { background: linear-gradient(135deg, #94a3b8, #64748b); color: #fff; }
+  .rank-3 { background: linear-gradient(135deg, #cd7f32, #a0522d); color: #fff; }
+  .rank-other { background: rgba(91,141,239,0.1); color: var(--text-muted); }
+
+  .tag {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 500;
+  }
+  .tag-iaa { background: rgba(52,211,153,0.15); color: var(--green); }
+  .tag-iap { background: rgba(251,191,36,0.15); color: var(--orange); }
+  .tag-iaap { background: rgba(124,92,252,0.15); color: var(--accent2); }
+  .tag-official { background: rgba(91,141,239,0.2); color: var(--accent); border: 1px solid rgba(91,141,239,0.4); margin-left: 4px; }
+
+  /* Footer */
+  .footer {
+    text-align: center;
+    padding: 32px 0;
+    color: var(--text-muted);
+    font-size: 13px;
+    border-top: 1px solid var(--card-border);
+    margin-top: 40px;
+  }
+
+  /* Print */
+  @media print {
+    body { background: #fff; color: #333; }
+    .kpi-card, .chart-card { border: 1px solid #ddd; }
+    .header h1 { color: #333; -webkit-text-fill-color: #333; }
+  }
+
+  @media (max-width: 768px) {
+    .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+    .chart-row { grid-template-columns: 1fr; }
+  }
+  /* Quick Nav - 快捷目录 */
+  .quick-nav {
+    position: fixed;
+    left: 16px;
+    bottom: 16px;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0;
+  }
+  .quick-nav-toggle {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: var(--gradient1);
+    border: none;
+    color: #fff;
+    font-size: 20px;
+    cursor: pointer;
+    box-shadow: 0 4px 16px rgba(91,141,239,0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .quick-nav-toggle:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 24px rgba(91,141,239,0.6);
+  }
+  .quick-nav-menu {
+    display: none;
+    flex-direction: column;
+    background: rgba(26,29,46,0.96);
+    border: 1px solid var(--card-border);
+    border-radius: 12px;
+    padding: 8px 0;
+    margin-bottom: 8px;
+    backdrop-filter: blur(12px);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+    max-height: 70vh;
+    overflow-y: auto;
+    min-width: 200px;
+  }
+  .quick-nav-menu.open {
+    display: flex;
+  }
+  .quick-nav-menu a {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 13px;
+    transition: all 0.15s;
+    white-space: nowrap;
+  }
+  .quick-nav-menu a:hover {
+    color: var(--accent);
+    background: rgba(91,141,239,0.08);
+  }
+  .quick-nav-menu a.active {
+    color: var(--accent);
+    font-weight: 600;
+    border-left: 3px solid var(--accent);
+  }
+  .quick-nav-menu a .nav-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--text-muted);
+    flex-shrink: 0;
+    transition: background 0.15s;
+  }
+  .quick-nav-menu a:hover .nav-dot,
+  .quick-nav-menu a.active .nav-dot {
+    background: var(--accent);
+  }
+  .quick-nav-menu::-webkit-scrollbar { width: 4px; }
+  .quick-nav-menu::-webkit-scrollbar-thumb { background: var(--card-border); border-radius: 2px; }
+
+</style>
+</head>
+<body>
+
+<!-- 快捷目录 -->
+<div class="quick-nav" id="quickNav">
+  <div class="quick-nav-menu" id="quickNavMenu">
+    <a href="#sec-overview"><span class="nav-dot"></span>核心指标总览</a>
+    <a href="#sec-dau"><span class="nav-dot"></span>活跃趋势</a>
+    <a href="#sec-iaa"><span class="nav-dot"></span>IAA广告变现</a>
+    <a href="#sec-gmv"><span class="nav-dot"></span>支付/GMV趋势</a>
+    <a href="#sec-cps"><span class="nav-dot"></span>CPS挂载</a>
+    <a href="#sec-official"><span class="nav-dot"></span>官方小程序</a>
+    <a href="#sec-finder"><span class="nav-dot"></span>视频号端原生</a>
+    <a href="#sec-traffic"><span class="nav-dot"></span>用户来源渠道</a>
+    <a href="#sec-iaa-rank"><span class="nav-dot"></span>商户IAA排名</a>
+    <a href="#sec-gmv-rank"><span class="nav-dot"></span>商户GMV排名</a>
+    <a href="#sec-drama"><span class="nav-dot"></span>Top30剧目</a>
+  </div>
+  <button class="quick-nav-toggle" id="quickNavToggle" title="快捷目录">☰</button>
+</div>
+<script>
+(function(){
+  const toggle = document.getElementById('quickNavToggle');
+  const menu = document.getElementById('quickNavMenu');
+  let open = false;
+  toggle.addEventListener('click', function(e) {
+    e.stopPropagation();
+    open = !open;
+    menu.classList.toggle('open', open);
+    toggle.textContent = open ? '✕' : '☰';
+  });
+  document.addEventListener('click', function() {
+    if (open) { open = false; menu.classList.remove('open'); toggle.textContent = '☰'; }
+  });
+  menu.addEventListener('click', function(e) {
+    if (e.target.closest('a')) {
+      open = false; menu.classList.remove('open'); toggle.textContent = '☰';
+    }
+  });
+  // scroll spy
+  const links = menu.querySelectorAll('a');
+  const sectionIds = Array.from(links).map(a => a.getAttribute('href').slice(1));
+  function updateActive() {
+    let current = sectionIds[0];
+    for (const id of sectionIds) {
+      const el = document.getElementById(id);
+      if (el && el.getBoundingClientRect().top <= 120) current = id;
+    }
+    links.forEach(a => {
+      a.classList.toggle('active', a.getAttribute('href') === '#' + current);
+    });
+  }
+  window.addEventListener('scroll', updateActive, { passive: true });
+  setTimeout(updateActive, 500);
+  // smooth scroll
+  document.querySelectorAll('.quick-nav-menu a').forEach(a => {
+    a.addEventListener('click', function(e) {
+      e.preventDefault();
+      const target = document.querySelector(this.getAttribute('href'));
+      if (target) target.scrollIntoView({ behavior:'smooth', block:'start' });
+    });
+  });
+})();
+</script>
+
+<div class="container">
+  <!-- Header -->
+  <div class="header">
+    <h1>微信短剧生态周报</h1>
+    <div class="subtitle">微信小程序短剧赛道数据总览</div>
+    <div class="date-range">2026.04.16（周四）— 2026.04.22（周三）</div>
+  </div>
+
+  <!-- ==================== Page 1: 核心指标总览 ==================== -->
+  <div class="section" id="sec-overview">
+    <div class="section-title">核心指标总览 <span class="badge">Executive Summary</span></div>
+    <div class="kpi-grid">
+      <div class="kpi-card">
+        <div class="kpi-label">大盘日均DAU</div>
+        <div class="kpi-value" style="background:var(--gradient1);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">2344w</div>
+        <div class="kpi-change down"><span class="arrow">&#9660;</span> 环比 -4.4%</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">日均广告变现（IAA）</div>
+        <div class="kpi-value" style="color:var(--green);">1605w</div>
+        <div class="kpi-change down"><span class="arrow">&#9660;</span> 环比 -3.0%</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">日均GMV</div>
+        <div class="kpi-value" style="color:var(--orange);">731w</div>
+        <div class="kpi-change up"><span class="arrow">&#9650;</span> 环比 +2.2%</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">CPS挂载日均DAU</div>
+        <div class="kpi-value" style="color:var(--accent2);">421w</div>
+        <div class="kpi-change up"><span class="arrow">&#9650;</span> 环比 +17.3%</div>
+      </div>
+    </div>
+    <div class="kpi-grid" style="grid-template-columns: repeat(4,1fr);">
+      <div class="kpi-card">
+        <div class="kpi-label">CPS挂载日均IAA</div>
+        <div class="kpi-value" style="color:var(--green);">155.8w</div>
+        <div class="kpi-change up"><span class="arrow">&#9650;</span> 环比 +29.7%</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">联合发行日均DAU</div>
+        <div class="kpi-value" style="color:var(--accent2);">323w</div>
+        <div class="kpi-change up"><span class="arrow">&#9650;</span> 环比 +31.2%</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">官小日均DAU</div>
+        <div class="kpi-value" style="color:var(--accent);">381w</div>
+        <div class="kpi-change up"><span class="arrow">&#9650;</span> 环比 +31.7%</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">官小日均IAA</div>
+        <div class="kpi-value" style="color:var(--green);">417w</div>
+        <div class="kpi-change up"><span class="arrow">&#9650;</span> 环比 +30.8%</div>
+      </div>
+    </div>
+    <div class="analysis-box">
+      <strong>核心分析：</strong>本周大盘DAU日均<span class="highlight">2344w</span>，环比<span class="highlight">-4.4%</span>，环比小幅回落；
+      IAA广告变现日均<span class="highlight">1605w</span>，环比<span class="highlight">-3.0%</span>；
+      GMV日均<span class="highlight">731w</span>，环比<span class="highlight">+2.2%</span>，收入侧保持稳定。
+      <br><strong>CPS挂载：</strong>DAU日均<span class="highlight">421w</span>（环比+17.3%），IAA日均<span class="highlight">155.8w</span>（环比+29.7%），量收双涨。
+      <br><strong>官小：</strong>DAU日均<span class="highlight">381w</span>（环比+31.7%），IAA日均<span class="highlight">417w</span>（环比+30.8%），联合发行DAU <span class="highlight">323w</span>（占比84.9%）。</div>
+  </div>
+
+  <!-- ==== Page 2: DAU趋势 ==================== -->
+  <div class="section" id="sec-dau">
+    <div class="section-title">活跃趋势 <span class="badge">DAU</span></div>
+    <div class="chart-card">
+      <div class="chart-title">大盘DAU日趋势</div>
+      <div id="chart-dau" style="width:100%;height:360px;"></div>
+    </div>
+    <div class="analysis-box">
+      <strong>趋势分析：</strong>本周DAU稳定在<span class="highlight">2253w-2410w</span>区间运行。
+      日均DAU <span class="highlight">2344w</span>（环比-4.4%），较上周高位略有回落。</div>
+  </div>
+
+  <!-- ================== Page 3: IAA变现趋势 ==================== -->
+  <div class="section" id="sec-iaa">
+    <div class="section-title">IAA广告变现 <span class="badge">Revenue</span></div>
+    <div class="chart-card">
+      <div class="chart-title">大盘广告收入 & ECPM 日趋势</div>
+      <div id="chart-iaa" style="width:100%;height:360px;"></div>
+    </div>
+    <div class="kpi-grid" style="grid-template-columns: repeat(2,1fr);">
+      <div class="kpi-card">
+        <div class="kpi-label">大盘IAA日均</div>
+        <div class="kpi-value" style="color:var(--green);">1605w</div>
+        <div class="kpi-change down"><span class="arrow">&#9660;</span> 环比 -3.0%</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">大盘ECPM</div>
+        <div class="kpi-value" style="color:var(--accent);">126.1</div>
+        <div class="kpi-change up"><span class="arrow">&#9650;</span> 环比 +0.8%</div>
+      </div>
+    </div>
+    <div class="analysis-box">
+      <strong>核心分析：</strong>本周大盘IAA变现日均<span class="highlight">1605w</span>，环比<span class="highlight">-3.0%</span>。
+      <span class="highlight">腾讯</span>日均IAA收入<span class="highlight">302.2w</span>，占比总IAA的18.8%；
+      <span class="highlight">番茄</span>日均164w排名第二，<span class="highlight">九州</span>日均120.1w排名第三。
+      <br><strong>ECPM趋势：</strong>大盘日均ECPM为<span class="highlight">126.1元</span>，环比+0.8%。</div>
+  </div>
+
+  <!-- ==================== Page 4: GMV/支付趋势 ==================== -->
+  <div class="section" id="sec-gmv">
+    <div class="section-title">支付/GMV趋势 <span class="badge">Payment</span></div>
+    <div class="chart-card">
+      <div class="chart-title">日均GMV & 客单价趋势</div>
+      <div id="chart-gmv" style="width:100%;height:360px;"></div>
+    </div>
+    <div class="analysis-box">
+      <strong>核心分析：</strong>本周GMV日均<span class="highlight">731w</span>，环比+2.2%。
+      <br><strong>客单价：</strong>本周日均客单价<span class="highlight">30.0元</span>（环比+2.4%）。</div>
+  </div>
+
+  <!-- ==================== CPS挂载（小程序）监控 ==================== -->
+  <div class="section" id="sec-cps">
+    <div class="section-title">CPS挂载（小程序） <span class="badge">视频号渠道</span></div>
+    <div class="kpi-grid" style="grid-template-columns: repeat(4,1fr);">
+      <div class="kpi-card">
+        <div class="kpi-label">日均DAU</div>
+        <div class="kpi-value" style="background:var(--gradient1);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">421w</div>
+        <div class="kpi-change up"><span class="arrow">&#9650;</span> 环比 +17.3%</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">人均时长</div>
+        <div class="kpi-value" style="color:var(--accent);">7.7min</div>
+        <div class="kpi-change down"><span class="arrow">&#9660;</span> 环比 -5.5%</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">日均IAA收入</div>
+        <div class="kpi-value" style="color:var(--green);">155.8w</div>
+        <div class="kpi-change up"><span class="arrow">&#9650;</span> 环比 +29.7%</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">ECPM</div>
+        <div class="kpi-value" style="color:var(--green);">73.0</div>
+        <div class="kpi-change up"><span class="arrow">&#9650;</span> 环比 +11.2%</div>
+      </div>
+    </div>
+    <div class="kpi-grid" style="grid-template-columns: repeat(4,1fr);">
+      <div class="kpi-card">
+        <div class="kpi-label">日均虚拟支付收入</div>
+        <div class="kpi-value" style="color:var(--orange);">172w</div>
+        <div class="kpi-change up"><span class="arrow">&#9650;</span> 环比 +7.8%</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">客单价</div>
+        <div class="kpi-value" style="color:var(--orange);">23.7元</div>
+        <div class="kpi-change down"><span class="arrow">&#9660;</span> 环比 -3.9%</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">日均GMV</div>
+        <div class="kpi-value" style="color:var(--orange);">177w</div>
+        <div class="kpi-change up"><span class="arrow">&#9650;</span> 环比 +7.7%</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">次日留存</div>
+        <div class="kpi-value" style="color:var(--accent2);">6.4%</div>
+        <div class="kpi-change down"><span class="arrow">&#9660;</span> 环比 -20.7%</div>
+      </div>
+    </div>
+    <div class="chart-row">
+      <div class="chart-card">
+        <div class="chart-title">CPS挂载 DAU & 人均时长</div>
+        <div id="chart-cps-dau" style="width:100%;height:360px;"></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-title">CPS挂载 IAA收入 & ECPM</div>
+        <div id="chart-cps-iaa" style="width:100%;height:360px;"></div>
+      </div>
+    </div>
+    <div class="chart-row" style="margin-top:20px;">
+      <div class="chart-card">
+        <div class="chart-title">CPS挂载 虚拟支付收入 & 客单价</div>
+        <div id="chart-cps-iap" style="width:100%;height:360px;"></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-title">CPS挂载 次日留存率</div>
+        <div id="chart-cps-retain" style="width:100%;height:360px;"></div>
+      </div>
+    </div>
+    <div class="analysis-box">
+      <strong>CPS挂载分析：</strong>CPS挂载本周日均DAU <span class="highlight">421w</span>，环比+17.3%，占大盘DAU的18.0%。
+      人均时长<span class="highlight">7.7分钟</span>，环比-5.5%。
+      <br><strong>IAA变现：</strong>日均IAA收入<span class="highlight">155.8w</span>，环比+29.7%。ECPM为<span class="highlight">73.0元</span>，环比+11.2%。
+      <br><strong>IAP变现：</strong>日均虚拟支付收入<span class="highlight">172w</span>（环比+7.8%）。GMV日均<span class="highlight">177w</span>（环比+7.7%），客单价<span class="highlight">23.7元</span>（环比-3.9%）。
+      <br><strong>次日留存：</strong>本周次留率<span class="highlight">6.4%</span>，环比-20.7%。</div>
+  </div>
+
+  <!-- ==================== 官小监控 ==================== -->
+  <div class="section" id="sec-official">
+    <div class="section-title">官方小程序（官小） <span class="badge">Official Mini Program</span></div>
+    <div class="kpi-grid" style="grid-template-columns: repeat(4,1fr);">
+      <div class="kpi-card">
+        <div class="kpi-label">日均DAU</div>
+        <div class="kpi-value" style="background:var(--gradient1);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">381w</div>
+        <div class="kpi-change up"><span class="arrow">&#9650;</span> 环比 +31.7%</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">人均时长</div>
+        <div class="kpi-value" style="color:var(--accent);">14.7min</div>
+        <div class="kpi-change down"><span class="arrow">&#9660;</span> 环比 -2.9%</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">日均IAA收入</div>
+        <div class="kpi-value" style="color:var(--green);">417w</div>
+        <div class="kpi-change up"><span class="arrow">&#9650;</span> 环比 +30.8%</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">ECPM</div>
+        <div class="kpi-value" style="color:var(--red);">123.1</div>
+        <div class="kpi-change down"><span class="arrow">&#9660;</span> 环比 -2.1%</div>
+      </div>
+    </div>
+    <div class="kpi-grid" style="grid-template-columns: repeat(4,1fr);">
+      <div class="kpi-card">
+        <div class="kpi-label">次日留存</div>
+        <div class="kpi-value" style="color:var(--accent2);">30.2%</div>
+        <div class="kpi-change up"><span class="arrow">&#9650;</span> 环比 +3.5%</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">联合发行日均DAU</div>
+        <div class="kpi-value" style="color:var(--orange);">323w</div>
+        <div class="kpi-change up"><span class="arrow">&#9650;</span> 环比 +31.2%</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">联合发行占比</div>
+        <div class="kpi-value" style="color:var(--orange);">84.9%</div>
+        <div class="kpi-change" style="color:var(--text-muted);">占官小DAU比例</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">自然回流占比</div>
+        <div class="kpi-value" style="color:var(--accent);">15.1%</div>
+        <div class="kpi-change" style="color:var(--text-muted);">非联合发行占比</div>
+      </div>
+    </div>
+    <div class="chart-row">
+      <div class="chart-card">
+        <div class="chart-title">官小 DAU & 人均时长</div>
+        <div id="chart-official-dau" style="width:100%;height:360px;"></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-title">官小 IAA收入 & ECPM</div>
+        <div id="chart-official-iaa" style="width:100%;height:360px;"></div>
+      </div>
+    </div>
+    <div class="chart-row" style="margin-top:20px;">
+      <div class="chart-card">
+        <div class="chart-title">官小 次日留存率</div>
+        <div id="chart-official-retain" style="width:100%;height:360px;"></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-title">官小 联合发行DAU & 占比</div>
+        <div id="chart-official-ad" style="width:100%;height:360px;"></div>
+      </div>
+    </div>
+    <div class="analysis-box">
+      <strong>官小分析：</strong>官方小程序本周日均DAU <span class="highlight">381w</span>，环比+31.7%，占大盘DAU的16.2%。
+      人均时长<span class="highlight">14.7分钟</span>（环比-2.9%）。
+      <br><strong>IAA变现：</strong>日均IAA收入<span class="highlight">417w</span>，环比+30.8%。ECPM为<span class="highlight">123.1元</span>，环比-2.1%。
+      <br><strong>联合发行：</strong>日均DAU <span class="highlight">323w</span>（环比+31.2%），占官小DAU的<span class="highlight">84.9%</span>，自然回流占<span class="highlight">15.1%</span>。
+      <br><strong>次日留存：</strong>本周次留率<span class="highlight">30.2%</span>（环比+3.5%）。
+      <br><strong>注：</strong>官小口径为 appid='wx404dde55fb12df78'（官方小程序直接访问用户），不含其他小程序播放授权剧目的用户。</div>
+  </div>
+
+  <!-- ==================== 视频号端原生监控 ==================== -->
+  <div class="section" id="sec-finder">
+    <div class="section-title">视频号端原生 <span class="badge">Channels / Finder Native</span></div>
+    <div class="kpi-grid" style="grid-template-columns: repeat(3,1fr);">
+      <div class="kpi-card">
+        <div class="kpi-label">外层日均DAU</div>
+        <div class="kpi-value" style="background:var(--gradient1);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">1.58亿</div>
+        <div class="kpi-change up"><span class="arrow">&#9650;</span> 环比 +6.3%</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">中间页日均DAU</div>
+        <div class="kpi-value" style="color:var(--accent2);">2686w</div>
+        <div class="kpi-change up"><span class="arrow">&#9650;</span> 环比 +4.6%</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">里层日均DAU</div>
+        <div class="kpi-value" style="color:var(--accent2);">1781w</div>
+        <div class="kpi-change up"><span class="arrow">&#9650;</span> 环比 +5.0%</div>
+      </div>
+    </div>
+    <div class="kpi-grid" style="grid-template-columns: repeat(3,1fr);">
+      <div class="kpi-card">
+        <div class="kpi-label">外→里 转化率</div>
+        <div class="kpi-value" style="color:var(--orange);">11.3%</div>
+        <div class="kpi-change" style="color:var(--text-muted);">里层DAU / 外层DAU</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">日均IAA收入</div>
+        <div class="kpi-value" style="color:var(--green);">1284w</div>
+        <div class="kpi-change down"><span class="arrow">&#9660;</span> 环比 -18.5%</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">ECPM</div>
+        <div class="kpi-value" style="color:var(--green);">33.6元</div>
+        <div class="kpi-change down"><span class="arrow">&#9660;</span> 环比 -24.8%</div>
+      </div>
+    </div>
+    <div class="chart-row">
+      <div class="chart-card">
+        <div class="chart-title">视频号端原生 三层DAU漏斗趋势</div>
+        <div id="chart-finder-dau" style="width:100%;height:360px;"></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-title">视频号端原生 IAA收入 & ECPM趋势</div>
+        <div id="chart-finder-iaa" style="width:100%;height:360px;"></div>
+      </div>
+    </div>
+    <div class="analysis-box">
+      <strong>视频号端原生分析：</strong>视频号短剧变现产品覆盖三个层级：<span class="highlight">外层</span>（feeds流播放用户）→ <span class="highlight">中间页</span>（半屏页浏览用户）→ <span class="highlight">里层</span>（半屏页点击用户）。
+      外层日均DAU <span class="highlight">1.58亿</span>（环比+6.3%），中间页<span class="highlight">2686w</span>（环比+4.6%），里层<span class="highlight">1781w</span>（环比+5.0%），外→里转化率<span class="highlight">11.3%</span>。
+      <br><strong>IAA变现：</strong>日均IAA收入<span class="highlight">1284w</span>（环比-18.5%），ECPM <span class="highlight">33.6元</span>（环比-24.8%），ECPM继续承压。
+      <br><strong>数据来源：</strong>外层DAU/IAA/曝光PV来自ADM看板表adm_daily_wxapp_drama_channels_native_index_at。本期数据覆盖 04.16-04.22。</div>
+  </div>
+
+  <!-- ==================== Page 5: 用户来源 ==================== -->
+  <div class="section" id="sec-traffic">
+    <div class="section-title">用户来源渠道 <span class="badge">Traffic</span></div>
+    <div class="chart-row">
+      <div class="chart-card">
+        <div class="chart-title">大盘流入PV占比（本周 04.16-04.22）</div>
+        <div id="chart-source-pie" style="width:100%;height:380px;"></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-title">大盘 本周 vs 上周 渠道UV对比</div>
+        <div id="chart-source-bar" style="width:100%;height:380px;"></div>
+      </div>
+    </div>
+    <div class="chart-row" style="margin-top:20px;">
+      <div class="chart-card">
+        <div class="chart-title">官小流入UV占比（本周 04.16-04.22）</div>
+        <div id="chart-gx-source-pie" style="width:100%;height:380px;"></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-title">官小 本周 vs 上周 渠道UV对比</div>
+        <div id="chart-gx-source-bar" style="width:100%;height:380px;"></div>
+      </div>
+    </div>
+    <div class="chart-row" style="margin-top:20px;">
+      <div class="chart-card">
+        <div class="chart-title">外部渠道来源UV占比（本周 04.16-04.22）</div>
+        <div id="chart-ext-source-pie" style="width:100%;height:380px;"></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-title">外部渠道 本周 vs 上周 UV对比</div>
+        <div id="chart-ext-source-bar" style="width:100%;height:380px;"></div>
+      </div>
+    </div>
+    <div class="analysis-box">
+      <strong>大盘渠道分析：</strong>大盘以<span class="highlight">AMS广告</span>为主，占比<span class="highlight">57.7%</span>，
+      视频号渠道占比<span class="highlight">12.9%</span>。外部跳转渠道本周UV<span class="highlight">769w</span>，环比+19.0%。
+      <br><strong>外部渠道分析：</strong>外部跳转渠道中<span class="highlight">小米浏览器</span>（120w）居首，<span class="highlight">HMS Core</span>（95w）次之，<span class="highlight">OPPO浏览器</span>（85w）、<span class="highlight">抖音短视频</span>（79w）紧随其后。</div>
+  </div>
+
+
+
+  <!-- ==================== Page 7: 各家商户排名 ==================== -->
+  <div class="section" id="sec-iaa-rank">
+    <div class="section-title">各商户IAA收入排名 <span class="badge">Company Ranking</span></div>
+    <div class="chart-row">
+      <div class="chart-card">
+        <div class="chart-title">本周各商户日均IAA收入（万元）</div>
+        <div id="chart-company-bar" style="width:100%;height:450px;"></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-title">本周 vs 上周 环比变化</div>
+        <div id="chart-company-change" style="width:100%;height:450px;"></div>
+      </div>
+    </div>
+    <div class="analysis-box">
+      <strong>商户分析：</strong>
+      <span class="highlight">腾讯</span>以日均IAA收入<span class="highlight">302.2w</span>稳居第一（环比-9.2%）；
+      <span class="highlight">番茄</span>以日均IAA收入<span class="highlight">164w</span>排名第二（环比-53.3%）；
+      <span class="highlight">九州</span>以日均IAA收入<span class="highlight">120.1w</span>第三（环比-8.4%）；
+      <span class="highlight">掌读</span>以日均IAA收入<span class="highlight">98.6w</span>第四（环比-31.6%）；
+      <span class="highlight">麦芽</span>以日均IAA收入<span class="highlight">39.6w</span>第五（环比-17.0%）。</div>
+  </div>
+
+  <!-- ==================== 各商户GMV排名 ==================== -->
+  <div class="section" id="sec-gmv-rank">
+    <div class="section-title">各商户GMV排名（IAP模式） <span class="badge">GMV Ranking</span></div>
+    <div class="chart-row">
+      <div class="chart-card">
+        <div class="chart-title">本周各商户日均GMV（万元）</div>
+        <div id="chart-company-gmv-bar" style="width:100%;height:450px;"></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-title">本周 vs 上周 GMV环比变化</div>
+        <div id="chart-company-gmv-change" style="width:100%;height:450px;"></div>
+      </div>
+    </div>
+    <div class="analysis-box">
+      <strong>商户GMV分析：</strong>
+      <span class="highlight">番茄</span>以日均GMV <span class="highlight">244.4w</span>占据主导地位（环比-39.5%）；
+      <span class="highlight">九州</span>日均GMV <span class="highlight">121.8w</span>排名第二（环比-6.9%）；
+      <span class="highlight">点众</span>日均GMV <span class="highlight">90.4w</span>第三（环比+34.5%）。</div>
+  </div>
+
+  <!-- ==================== Page 8: Top30 剧目排行 ==================== -->
+  <div class="section" id="sec-drama">
+    <div class="section-title">Top 30 热门剧目 <span class="badge">Drama Ranking</span></div>
+    <div class="chart-card" style="overflow-x:auto;">
+      <div class="chart-title">按综合收入排行（04.16 - 04.22）</div>
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>排名</th>
+            <th>剧目名称</th>
+            <th>商户</th>
+            <th>UV</th>
+            <th>播放PV</th>
+            <th>虚拟支付(元)</th>
+            <th>IAA收入(元)</th>
+            <th>总收入(元)</th>
+          </tr>
+        </thead>
+        <tbody id="drama-table-body">
+        </tbody>
+      </table>
+    </div>
+    <div class="analysis-box">
+      <strong>剧目分析：</strong>
+      Top1 未知<span class="highlight">《天降福妻》</span>以总收入285.3w登顶，UV达568w；
+      Top2 腾讯<span class="highlight">《财神天降，送我上青云》</span>总收入265.9w;
+      Top3 九州<span class="highlight">《嫁傻不嫁渣》</span>总收入233.7w。
+      Top30中腾讯占<span class="highlight">7部</span>、九州占<span class="highlight">5部</span>、掌读占<span class="highlight">4部</span>、未知商户占<span class="highlight">8部</span>。
+      <br><strong>官小授权：</strong>Top30中<span class="highlight">18部</span>已授权官方小程序。</div>
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    <div>数据来源：微信短剧BI后台 &middot; DWS汇总表 | 自动生成于 2026-04-24</div>
+    <div style="margin-top:4px;">微信短剧生态团队</div>
+  </div>
+</div>
+
+<script>
+// ============ Data ============
+const dailyData = [
+  {ds:'03.25',dau:22660629,gmv:7402770,iaa:13375610,iap:5973091,exp:117793409,payUv:262775,shDau:4209259,shIaa:967304,shExp:13437842,shDur:1444066532,shGmv:1754542,shIap:1688303,shPayUv:72596,shRetain:198678,gxDau:2704155,gxIaa:2685087,gxExp:24755195,gxDur:2237470484,gxRetain:855532,gxAd:2352843},
+  {ds:'03.26',dau:22883370,gmv:7013663,iaa:14169632,iap:5669912,exp:125400643,payUv:240752,shDau:3858705,shIaa:947494,shExp:13680220,shDur:1427423230,shGmv:1667016,shIap:1602771,shPayUv:68257,shRetain:196668,gxDau:2879678,gxIaa:2914430,gxExp:26681773,gxDur:2319261514,gxRetain:912622,gxAd:2533474},
+  {ds:'03.27',dau:23685934,gmv:6697770,iaa:14661827,iap:5431663,exp:129939107,payUv:223650,shDau:3665862,shIaa:948349,shExp:13118377,shDur:1358220080,shGmv:1618725,shIap:1563837,shPayUv:67628,shRetain:176723,gxDau:3247343,gxIaa:3410987,gxExp:31623675,gxDur:2600632046,gxRetain:872364,gxAd:2882262},
+  {ds:'03.28',dau:21976064,gmv:6805897,iaa:13016408,iap:5495593,exp:115608536,payUv:232689,shDau:3875712,shIaa:1020212,shExp:14439795,shDur:1486091537,shGmv:1704609,shIap:1640597,shPayUv:72012,shRetain:213819,gxDau:2736912,gxIaa:2647833,gxExp:23983508,gxDur:2079596559,gxRetain:836501,gxAd:2386635},
+  {ds:'03.29',dau:24008627,gmv:7048907,iaa:14787710,iap:5679349,exp:137142376,payUv:229343,shDau:4010346,shIaa:1145553,shExp:16106405,shDur:1623232824,shGmv:1805936,shIap:1730875,shPayUv:72061,shRetain:203692,gxDau:3054871,gxIaa:3287752,gxExp:29084649,gxDur:2394265209,gxRetain:854700,gxAd:2718672},
+  {ds:'03.30',dau:23750401,gmv:6954523,iaa:14231685,iap:5719721,exp:136204648,payUv:236870,shDau:3815529,shIaa:1040764,shExp:14167046,shDur:1475274500,shGmv:1767607,shIap:1709575,shPayUv:73983,shRetain:198004,gxDau:2758379,gxIaa:3063309,gxExp:28199001,gxDur:2424123219,gxRetain:846501,gxAd:2374335},
+  {ds:'03.31',dau:24529832,gmv:7095940,iaa:14618733,iap:5805373,exp:132350061,payUv:252228,shDau:3944244,shIaa:1100796,shExp:14709002,shDur:1508110488,shGmv:1757003,shIap:1694854,shPayUv:72636,shRetain:221525,gxDau:2599899,gxIaa:3199353,gxExp:27426512,gxDur:2438262364,gxRetain:824507,gxAd:2213297},
+  {ds:'04.01',dau:23507801,gmv:6858631,iaa:14049017,iap:5592256,exp:119124816,payUv:242926,shDau:3976825,shIaa:1100544,shExp:15130856,shDur:1526332200,shGmv:1731405,shIap:1670064,shPayUv:73570,shRetain:256443,gxDau:2674269,gxIaa:3130259,gxExp:24804929,gxDur:2264662302,gxRetain:761170,gxAd:2310712},
+  {ds:'04.02',dau:23855127,gmv:6755205,iaa:13642618,iap:5498395,exp:127866790,payUv:231960,shDau:4222107,shIaa:1238776,shExp:17457931,shDur:1690364683,shGmv:1764806,shIap:1709398,shPayUv:71810,shRetain:276535,gxDau:2306084,gxIaa:2784635,gxExp:23242054,gxDur:2130806972,gxRetain:696949,gxAd:1954252},
+  {ds:'04.03',dau:23818413,gmv:7333676,iaa:13786515,iap:5935376,exp:121777406,payUv:241510,shDau:4053000,shIaa:1194061,shExp:17203373,shDur:1717121004,shGmv:1866079,shIap:1808922,shPayUv:70226,shRetain:226958,gxDau:2331319,gxIaa:2652775,gxExp:21206285,gxDur:2068507469,gxRetain:638720,gxAd:1954806},
+  {ds:'04.04',dau:23212138,gmv:7697151,iaa:13252213,iap:6241144,exp:117743629,payUv:244298,shDau:3718375,shIaa:1041442,shExp:14100166,shDur:1454864938,shGmv:1943282,shIap:1871430,shPayUv:68351,shRetain:209102,gxDau:2188760,gxIaa:2476445,gxExp:18796377,gxDur:1835647728,gxRetain:624661,gxAd:1839271},
+  {ds:'04.05',dau:22807652,gmv:7233918,iaa:13850826,iap:5897183,exp:121446374,payUv:234890,shDau:3384711,shIaa:994459,shExp:14189350,shDur:1448031812,shGmv:1779605,shIap:1723048,shPayUv:63814,shRetain:214349,gxDau:2432628,gxIaa:2724208,gxExp:20144054,gxDur:1919950772,gxRetain:644244,gxAd:2069235},
+  {ds:'04.06',dau:24347256,gmv:7063666,iaa:15179246,iap:5737894,exp:131555380,payUv:234553,shDau:3300207,shIaa:1051638,shExp:15114729,shDur:1510996726,shGmv:1785329,shIap:1735159,shPayUv:66263,shRetain:219940,gxDau:2462603,gxIaa:2612406,gxExp:19677393,gxDur:1960799406,gxRetain:723425,gxAd:2066264},
+  {ds:'04.07',dau:24671675,gmv:6907545,iaa:15442613,iap:5614699,exp:137409395,payUv:240461,shDau:3089357,shIaa:973148,shExp:14449577,shDur:1425625363,shGmv:1603002,shIap:1555065,shPayUv:63339,shRetain:225568,gxDau:2946155,gxIaa:3202513,gxExp:25265623,gxDur:2466237066,gxRetain:802965,gxAd:2521077},
+  {ds:'04.08',dau:24176580,gmv:7235630,iaa:15817763,iap:5957963,exp:125839580,payUv:247887,shDau:3185630,shIaa:1070488,shExp:16091144,shDur:1547367880,shGmv:1627891,shIap:1586885,shPayUv:61725,shRetain:236548,gxDau:2810499,gxIaa:2884174,gxExp:21774016,gxDur:2285296109,gxRetain:789938,gxAd:2367741},
+  {ds:'04.09',dau:24265988,gmv:7565388,iaa:15729323,iap:6189556,exp:129213798,payUv:260356,shDau:3096772,shIaa:998411,shExp:14724613,shDur:1402255509,shGmv:1659785,shIap:1614515,shPayUv:63363,shRetain:241360,gxDau:2795015,gxIaa:2891163,gxExp:22607563,gxDur:2374848617,gxRetain:816777,gxAd:2362500},
+  {ds:'04.10',dau:23257695,gmv:7222568,iaa:15525380,iap:5801013,exp:119275071,payUv:244726,shDau:3359160,shIaa:1083611,shExp:16516753,shDur:1570864479,shGmv:1526677,shIap:1486470,shPayUv:60272,shRetain:261355,gxDau:2878823,gxIaa:2883615,gxExp:23770356,gxDur:2472256865,gxRetain:816801,gxAd:2466643},
+  {ds:'04.11',dau:25100905,gmv:7028885,iaa:16825006,iap:5608555,exp:135033155,payUv:234276,shDau:3438391,shIaa:1138071,shExp:16470839,shDur:1599022742,shGmv:1664957,shIap:1620074,shPayUv:65671,shRetain:292022,gxDau:2816128,gxIaa:3195228,gxExp:25756135,gxDur:2539329499,gxRetain:804742,gxAd:2418477},
+  {ds:'04.12',dau:25616230,gmv:7236151,iaa:17599330,iap:5773166,exp:142142996,payUv:244569,shDau:4018729,shIaa:1377776,shExp:22761694,shDur:2151757255,shGmv:1683799,shIap:1634297,shPayUv:67988,shRetain:435291,gxDau:2770979,gxIaa:3291050,gxExp:25295866,gxDur:2572220234,gxRetain:752650,gxAd:2378105},
+  {ds:'04.13',dau:24078555,gmv:6884889,iaa:16346906,iap:5558032,exp:134689291,payUv:239917,shDau:3888105,shIaa:1266802,shExp:22255752,shDur:2151168878,shGmv:1569284,shIap:1524837,shPayUv:64341,shRetain:275333,gxDau:2601759,gxIaa:2781593,gxExp:21703902,gxDur:2367301602,gxRetain:846114,gxAd:2166925},
+  {ds:'04.14',dau:24726665,gmv:7091849,iaa:17204677,iap:5775471,exp:134175659,payUv:244482,shDau:3760656,shIaa:1300481,shExp:18265416,shDur:1745678611,shGmv:1697265,shIap:1651668,shPayUv:72937,shRetain:237452,gxDau:3267532,gxIaa:3893277,gxExp:31354336,gxDur:3214072859,gxRetain:958355,gxAd:2819607},
+  {ds:'04.15',dau:24502711,gmv:7070852,iaa:16573252,iap:5765575,exp:130902328,payUv:239237,shDau:3582629,shIaa:1239741,shExp:17056382,shDur:1611835833,shGmv:1694084,shIap:1647871,shPayUv:72162,shRetain:237352,gxDau:3100744,gxIaa:3374400,gxExp:26958412,gxDur:2872973353,gxRetain:973587,gxAd:2631426},
+  {ds:'04.16',dau:24095557,gmv:6932184,iaa:16146771,iap:5624284,exp:127457412,payUv:236443,shDau:3855438,shIaa:1421741,shExp:19326888,shDur:1799330846,shGmv:1645013,shIap:1606773,shPayUv:68683,shRetain:249586,gxDau:3552844,gxIaa:3876632,gxExp:30993995,gxDur:3183405156,gxRetain:1071106,gxAd:3043038},
+  {ds:'04.17',dau:22955445,gmv:6788377,iaa:15420153,iap:5531296,exp:117898676,payUv:227896,shDau:4053508,shIaa:1546191,shExp:19903472,shDur:1808453907,shGmv:1673056,shIap:1631589,shPayUv:70503,shRetain:257585,gxDau:3650520,gxIaa:3904065,gxExp:30627601,gxDur:3198075009,gxRetain:1089886,gxAd:3176340},
+  {ds:'04.18',dau:22525642,gmv:7063993,iaa:15273797,iap:5672376,exp:116773007,payUv:230798,shDau:4079086,shIaa:1587263,shExp:20106568,shDur:1828116176,shGmv:1853593,shIap:1794369,shPayUv:76164,shRetain:272086,gxDau:3756089,gxIaa:4154875,gxExp:32658914,gxDur:3332357904,gxRetain:1067527,gxAd:3238363},
+  {ds:'04.19',dau:23747380,gmv:7716429,iaa:16033394,iap:6087341,exp:125293457,payUv:247231,shDau:4440583,shIaa:1655593,shExp:22675949,shDur:2055307673,shGmv:1904043,shIap:1848834,shPayUv:79936,shRetain:264230,gxDau:3510060,gxIaa:3822522,gxExp:31344440,gxDur:3101020180,gxRetain:1067074,gxAd:2963740},
+  {ds:'04.20',dau:23037755,gmv:6892010,iaa:15810856,iap:5554989,exp:130220218,payUv:234736,shDau:4257279,shIaa:1469435,shExp:21811322,shDur:1986439993,shGmv:1735815,shIap:1690205,shPayUv:76144,shRetain:269468,gxDau:3938306,gxIaa:4514561,gxExp:39058358,gxDur:3700739234,gxRetain:1264325,gxAd:3290785},
+  {ds:'04.21',dau:23783678,gmv:7968901,iaa:16662001,iap:6448124,exp:137493203,payUv:259099,shDau:4322208,shIaa:1514712,shExp:21941241,shDur:2001948082,shGmv:1762005,shIap:1717592,shPayUv:75937,shRetain:290382,gxDau:4237039,gxIaa:4755467,gxExp:39859408,gxDur:3735279835,gxRetain:1275719,gxAd:3566495},
+  {ds:'04.22',dau:23922194,gmv:7817854,iaa:17007575,iap:6332801,exp:135856817,payUv:267847,shDau:4474961,shIaa:1710186,shExp:23616801,shDur:2080614912,shGmv:1812846,shIap:1765944,shPayUv:76103,shRetain:0,gxDau:4000851,gxIaa:4151886,gxExp:32499300,gxDur:3309104710,gxRetain:0,gxAd:3351577}
+];
+
+const dramas = [
+  {name:'天降福妻',company:'未知',uv:5678549,play:11659567,iap:0,iaa:2852857,total:2852857,official:false},
+  {name:'财神天降，送我上青云',company:'腾讯',uv:1875036,play:36777732,iap:0,iaa:2659122,total:2659122,official:true},
+  {name:'嫁傻不嫁渣',company:'九州',uv:927433,play:20240961,iap:1159929,iaa:1176670,total:2336599,official:false},
+  {name:'财神天降，送我上青云',company:'点众',uv:473631,play:8518251,iap:2099703,iaa:89570,total:2189272,official:false},
+  {name:'婆婆再婚，儿媳美翻全场',company:'未知',uv:5059221,play:13740343,iap:0,iaa:1677437,total:1677437,official:false},
+  {name:'报告！新夫人是香软小蛋糕',company:'腾讯',uv:610822,play:18289421,iap:0,iaa:1240057,total:1240057,official:true},
+  {name:'她在烽火尽头加冕',company:'腾讯',uv:1347367,play:13255214,iap:0,iaa:1224754,total:1224754,official:true},
+  {name:'一南一北',company:'掌读',uv:3785817,play:8964962,iap:0,iaa:1126938,total:1126938,official:false},
+  {name:'此心安处是我家',company:'腾讯',uv:1065010,play:15871643,iap:0,iaa:1047333,total:1047333,official:true},
+  {name:'男人五十岁',company:'点众',uv:103549,play:1888350,iap:1010838,iaa:6052,total:1016890,official:false},
+  {name:'保镖男友是殿主',company:'未知',uv:367774,play:7267552,iap:647327,iaa:339772,total:987099,official:true},
+  {name:'绝世狂医',company:'腾讯',uv:1225713,play:11056232,iap:0,iaa:983706,total:983706,official:true},
+  {name:'落花时节君不在',company:'未知',uv:1770627,play:4070823,iap:0,iaa:912342,total:912342,official:true},
+  {name:'天降福妻',company:'番茄',uv:2145062,play:4170879,iap:0,iaa:891645,total:891645,official:false},
+  {name:'送妈去过好日子',company:'腾讯',uv:927943,play:6659660,iap:0,iaa:859678,total:859678,official:true},
+  {name:'末日动物变异，我的忠犬开始进化',company:'未知',uv:1313863,play:2533540,iap:0,iaa:809604,total:809604,official:true},
+  {name:'农门奶娘，上位世子妃',company:'九州',uv:255146,play:5138810,iap:139880,iaa:628795,total:768675,official:false},
+  {name:'不养白眼狼后我赢麻了',company:'360',uv:1696284,play:9777194,iap:0,iaa:753008,total:753008,official:false},
+  {name:'保镖男友是殿主',company:'九州',uv:66152,play:1189929,iap:730703,iaa:16945,total:747648,official:true},
+  {name:'凤归花枝暖',company:'未知',uv:177078,play:5137863,iap:476727,iaa:267251,total:743978,official:true},
+  {name:'她的圈套',company:'掌读',uv:2772753,play:5556011,iap:0,iaa:730343,total:730343,official:true},
+  {name:'借命瓷娃',company:'未知',uv:1396515,play:2705953,iap:0,iaa:693363,total:693363,official:true},
+  {name:'我的男友是蟒夫',company:'掌读',uv:2730064,play:6719900,iap:0,iaa:657220,total:657220,official:true},
+  {name:'末日防空洞',company:'容量',uv:642157,play:1644978,iap:0,iaa:655540,total:655540,official:false},
+  {name:'上大学后妈妈给我的生活费是一叠刮刮乐',company:'掌读',uv:1168856,play:3327053,iap:0,iaa:621489,total:621489,official:true},
+  {name:'弱女无敌',company:'九州',uv:243831,play:4945223,iap:270814,iaa:347770,total:618584,official:true},
+  {name:'月给五百，老娘不伺候了',company:'腾讯',uv:474979,play:9928126,iap:0,iaa:586580,total:586580,official:true},
+  {name:'巅峰归来总裁回乡记',company:'未知',uv:1385351,play:6583436,iap:0,iaa:585255,total:585255,official:false},
+  {name:'虎女伴娘亲，寒门讨公道',company:'容量',uv:1010456,play:3766054,iap:0,iaa:560846,total:560846,official:false},
+  {name:'白布之下',company:'九州',uv:316161,play:4471331,iap:78352,iaa:438598,total:516950,official:true}
+];
+
+// ============ Utility ============
+function fmtW(n) { return (n/10000).toFixed(0) + 'w'; }
+function fmtW1(n) { return (n/10000).toFixed(1) + 'w'; }
+function fmtMoney(n) {
+  if (n >= 10000) return (n/10000).toFixed(1) + 'w';
+  return n.toFixed(0);
+}
+function fmtNum(n) {
+  if (n >= 10000000) return (n/10000).toFixed(0) + 'w';
+  if (n >= 10000) return (n/10000).toFixed(1) + 'w';
+  return n.toLocaleString();
+}
+
+// Theme
+const chartTheme = {
+  backgroundColor: 'transparent',
+  textStyle: { color: '#8b8fa3' },
+  title: { textStyle: { color: '#e8e8e8' } },
+};
+
+// ============ Chart 1: DAU ============
+(function(){
+  const chart = echarts.init(document.getElementById('chart-dau'));
+  chart.setOption({
+    ...chartTheme,
+    tooltip: { trigger:'axis', backgroundColor:'#1a1d2e', borderColor:'#2a2d3e', textStyle:{color:'#e8e8e8'},
+      formatter: function(p) { return p[0].axisValue + '<br>' + p.map(s => s.marker + s.seriesName + ': ' + fmtW(s.value)).join('<br>'); }
+    },
+    legend: { data:['大盘DAU'], textStyle:{color:'#8b8fa3'}, top:0 },
+    grid: { left:60, right:44, top:36, bottom:30 },
+    xAxis: { type:'category', data: dailyData.map(d=>d.ds), axisLabel:{color:'#8b8fa3'}, axisLine:{lineStyle:{color:'#2a2d3e'}} },
+    yAxis: { type:'value', axisLabel:{color:'#8b8fa3', formatter:v=>fmtW(v)}, splitLine:{lineStyle:{color:'#1e2130'}} },
+    series: [
+      { name:'大盘DAU', type:'line', data:dailyData.map(d=>d.dau), smooth:true,
+        lineStyle:{color:'#5b8def', width:3},
+        areaStyle:{color:new echarts.graphic.LinearGradient(0,0,0,1,[{offset:0,color:'rgba(91,141,239,0.3)'},{offset:1,color:'rgba(91,141,239,0)'}])},
+        itemStyle:{color:'#5b8def'},
+        markLine: {
+          silent: true, symbol: 'none',
+          lineStyle: { color: '#f87171', type: 'dashed', width: 1 },
+          data: [{ xAxis: '04.16', label: { formatter: '本周起点', color:'#f87171', fontSize:11 } }]
+        }
+      }
+    ]
+  });
+  window.addEventListener('resize', ()=>chart.resize());
+})();
+
+// ============ Chart 2: IAA + ECPM ============
+(function(){
+  const ecpmData = dailyData.map(d => d.exp > 0 ? Math.round(d.iaa / d.exp * 1000 * 10) / 10 : 0);
+  const chart = echarts.init(document.getElementById('chart-iaa'));
+  chart.setOption({
+    ...chartTheme,
+    tooltip: { trigger:'axis', backgroundColor:'#1a1d2e', borderColor:'#2a2d3e', textStyle:{color:'#e8e8e8'},
+      formatter: function(p) {
+        return p[0].axisValue + '<br>' + p.map(s => {
+          if (s.seriesName==='ECPM') return s.marker + s.seriesName + ': ' + s.value + '元';
+          return s.marker + s.seriesName + ': ' + fmtW1(s.value);
+        }).join('<br>');
+      }
+    },
+    legend: { data:['大盘IAA','ECPM'], textStyle:{color:'#8b8fa3'}, top:0 },
+    grid: { left:60, right:60, top:36, bottom:30 },
+    xAxis: { type:'category', data:dailyData.map(d=>d.ds), axisLabel:{color:'#8b8fa3'}, axisLine:{lineStyle:{color:'#2a2d3e'}} },
+    yAxis: [
+      { type:'value', axisLabel:{color:'#8b8fa3', formatter:v=>fmtW(v)}, splitLine:{lineStyle:{color:'#1e2130'}} },
+      { type:'value', position:'right', axisLabel:{color:'#5b8def', formatter:v=>v+'元'}, splitLine:{show:false}, axisLine:{lineStyle:{color:'#5b8def'}}, name:'ECPM', nameTextStyle:{color:'#5b8def',fontSize:11} }
+    ],
+    series: [
+      { name:'大盘IAA', type:'line', data:dailyData.map(d=>d.iaa), smooth:true, yAxisIndex:0,
+        lineStyle:{color:'#34d399',width:2.5}, itemStyle:{color:'#34d399'},
+        areaStyle:{color:new echarts.graphic.LinearGradient(0,0,0,1,[{offset:0,color:'rgba(52,211,153,0.2)'},{offset:1,color:'rgba(52,211,153,0)'}])},
+      },
+      { name:'ECPM', type:'line', data:ecpmData, smooth:true, yAxisIndex:1,
+        lineStyle:{color:'#5b8def',width:2,type:'dashed'}, itemStyle:{color:'#5b8def'},
+        symbol:'circle', symbolSize:4,
+      }
+    ]
+  });
+  window.addEventListener('resize', ()=>chart.resize());
+})();
+
+// ============ Chart 3: GMV + 客单价 ============
+(function(){
+  const priceData = dailyData.map(d => d.payUv > 0 ? Math.round(d.gmv / d.payUv * 10) / 10 : 0);
+  const chart = echarts.init(document.getElementById('chart-gmv'));
+  chart.setOption({
+    ...chartTheme,
+    tooltip: { trigger:'axis', backgroundColor:'#1a1d2e', borderColor:'#2a2d3e', textStyle:{color:'#e8e8e8'},
+      formatter: function(p) {
+        return p[0].axisValue + '<br>' + p.map(s => {
+          if (s.seriesName==='客单价') return s.marker + s.seriesName + ': ' + s.value + '元';
+          return s.marker + s.seriesName + ': ' + fmtW1(s.value);
+        }).join('<br>');
+      }
+    },
+    legend: { data:['GMV','客单价'], textStyle:{color:'#8b8fa3'}, top:0 },
+    grid: { left:60, right:60, top:36, bottom:30 },
+    xAxis: { type:'category', data:dailyData.map(d=>d.ds), axisLabel:{color:'#8b8fa3'}, axisLine:{lineStyle:{color:'#2a2d3e'}} },
+    yAxis: [
+      { type:'value', axisLabel:{color:'#8b8fa3', formatter:v=>fmtW(v)}, splitLine:{lineStyle:{color:'#1e2130'}} },
+      { type:'value', position:'right', axisLabel:{color:'#f472b6', formatter:v=>v+'元'}, splitLine:{show:false}, axisLine:{lineStyle:{color:'#f472b6'}}, name:'客单价', nameTextStyle:{color:'#f472b6',fontSize:11} }
+    ],
+    series: [
+      { name:'GMV', type:'bar', data:dailyData.map(d=>d.gmv), yAxisIndex:0,
+        itemStyle:{
+          color: new echarts.graphic.LinearGradient(0,0,0,1,[{offset:0,color:'#fbbf24'},{offset:1,color:'rgba(251,191,36,0.3)'}]),
+          borderRadius:[4,4,0,0]
+        },
+        barMaxWidth: 32,
+      },
+      { name:'客单价', type:'line', data:priceData, smooth:true, yAxisIndex:1,
+        lineStyle:{color:'#f472b6',width:2,type:'dashed'}, itemStyle:{color:'#f472b6'},
+        symbol:'circle', symbolSize:4,
+      }
+    ]
+  });
+  window.addEventListener('resize', ()=>chart.resize());
+})();
+
+// ============ CPS挂载 Chart 1: DAU & 人均时长 ============
+(function(){
+  const durData = dailyData.map(d => d.shDau > 0 ? Math.round(d.shDur / d.shDau / 60 * 10) / 10 : 0);
+  const chart = echarts.init(document.getElementById('chart-cps-dau'));
+  chart.setOption({
+    ...chartTheme,
+    tooltip: { trigger:'axis', backgroundColor:'#1a1d2e', borderColor:'#2a2d3e', textStyle:{color:'#e8e8e8'},
+      formatter: function(p) {
+        return p[0].axisValue + '<br>' + p.map(s => {
+          if (s.seriesName==='人均时长') return s.marker + s.seriesName + ': ' + s.value + 'min';
+          return s.marker + s.seriesName + ': ' + fmtW(s.value);
+        }).join('<br>');
+      }
+    },
+    legend: { data:['DAU','人均时长'], textStyle:{color:'#8b8fa3'}, top:0 },
+    grid: { left:60, right:60, top:36, bottom:30 },
+    xAxis: { type:'category', data:dailyData.map(d=>d.ds), axisLabel:{color:'#8b8fa3'}, axisLine:{lineStyle:{color:'#2a2d3e'}} },
+    yAxis: [
+      { type:'value', axisLabel:{color:'#8b8fa3', formatter:v=>fmtW(v)}, splitLine:{lineStyle:{color:'#1e2130'}} },
+      { type:'value', position:'right', axisLabel:{color:'#f472b6', formatter:v=>v+'min'}, splitLine:{show:false}, axisLine:{lineStyle:{color:'#f472b6'}}, name:'时长', nameTextStyle:{color:'#f472b6',fontSize:11} }
+    ],
+    series: [
+      { name:'DAU', type:'line', data:dailyData.map(d=>d.shDau), smooth:true, yAxisIndex:0,
+        lineStyle:{color:'#7c5cfc',width:2.5}, itemStyle:{color:'#7c5cfc'},
+        areaStyle:{color:new echarts.graphic.LinearGradient(0,0,0,1,[{offset:0,color:'rgba(124,92,252,0.25)'},{offset:1,color:'rgba(124,92,252,0)'}])},
+        markLine: {
+          silent: true, symbol: 'none',
+          lineStyle: { color: '#f87171', type: 'dashed', width: 1 },
+          data: [{ xAxis: '04.16', label: { formatter: '本周起点', color:'#f87171', fontSize:11 } }]
+        }
+      },
+      { name:'人均时长', type:'line', data:durData, smooth:true, yAxisIndex:1,
+        lineStyle:{color:'#f472b6',width:2,type:'dashed'}, itemStyle:{color:'#f472b6'},
+        symbol:'circle', symbolSize:4,
+      }
+    ]
+  });
+  window.addEventListener('resize', ()=>chart.resize());
+})();
+
+// ============ CPS挂载 Chart 2: IAA & ECPM ============
+(function(){
+  const cpsEcpm = dailyData.map(d => d.shExp > 0 ? Math.round(d.shIaa / d.shExp * 1000 * 10) / 10 : 0);
+  const chart = echarts.init(document.getElementById('chart-cps-iaa'));
+  chart.setOption({
+    ...chartTheme,
+    tooltip: { trigger:'axis', backgroundColor:'#1a1d2e', borderColor:'#2a2d3e', textStyle:{color:'#e8e8e8'},
+      formatter: function(p) {
+        return p[0].axisValue + '<br>' + p.map(s => {
+          if (s.seriesName==='ECPM') return s.marker + s.seriesName + ': ' + s.value + '元';
+          return s.marker + s.seriesName + ': ' + fmtW1(s.value);
+        }).join('<br>');
+      }
+    },
+    legend: { data:['IAA收入','ECPM'], textStyle:{color:'#8b8fa3'}, top:0 },
+    grid: { left:60, right:60, top:36, bottom:30 },
+    xAxis: { type:'category', data:dailyData.map(d=>d.ds), axisLabel:{color:'#8b8fa3'}, axisLine:{lineStyle:{color:'#2a2d3e'}} },
+    yAxis: [
+      { type:'value', axisLabel:{color:'#8b8fa3', formatter:v=>fmtW(v)}, splitLine:{lineStyle:{color:'#1e2130'}} },
+      { type:'value', position:'right', axisLabel:{color:'#34d399', formatter:v=>v+'元'}, splitLine:{show:false}, axisLine:{lineStyle:{color:'#34d399'}}, name:'ECPM', nameTextStyle:{color:'#34d399',fontSize:11} }
+    ],
+    series: [
+      { name:'IAA收入', type:'line', data:dailyData.map(d=>d.shIaa), smooth:true, yAxisIndex:0,
+        lineStyle:{color:'#34d399',width:2.5}, itemStyle:{color:'#34d399'},
+        areaStyle:{color:new echarts.graphic.LinearGradient(0,0,0,1,[{offset:0,color:'rgba(52,211,153,0.25)'},{offset:1,color:'rgba(52,211,153,0)'}])},
+      },
+      { name:'ECPM', type:'line', data:cpsEcpm, smooth:true, yAxisIndex:1,
+        lineStyle:{color:'#5b8def',width:2,type:'dashed'}, itemStyle:{color:'#5b8def'},
+        symbol:'circle', symbolSize:4,
+      }
+    ]
+  });
+  window.addEventListener('resize', ()=>chart.resize());
+})();
+
+// ============ CPS挂载 Chart 3: IAP & 客单价 ============
+(function(){
+  const cpsPriceData = dailyData.map(d => d.shPayUv > 0 ? Math.round(d.shGmv / d.shPayUv * 10) / 10 : 0);
+  const chart = echarts.init(document.getElementById('chart-cps-iap'));
+  chart.setOption({
+    ...chartTheme,
+    tooltip: { trigger:'axis', backgroundColor:'#1a1d2e', borderColor:'#2a2d3e', textStyle:{color:'#e8e8e8'},
+      formatter: function(p) {
+        return p[0].axisValue + '<br>' + p.map(s => {
+          if (s.seriesName==='客单价') return s.marker + s.seriesName + ': ' + s.value + '元';
+          return s.marker + s.seriesName + ': ' + fmtW1(s.value);
+        }).join('<br>');
+      }
+    },
+    legend: { data:['虚拟支付收入','客单价'], textStyle:{color:'#8b8fa3'}, top:0 },
+    grid: { left:60, right:60, top:36, bottom:30 },
+    xAxis: { type:'category', data:dailyData.map(d=>d.ds), axisLabel:{color:'#8b8fa3'}, axisLine:{lineStyle:{color:'#2a2d3e'}} },
+    yAxis: [
+      { type:'value', axisLabel:{color:'#8b8fa3', formatter:v=>fmtW(v)}, splitLine:{lineStyle:{color:'#1e2130'}} },
+      { type:'value', position:'right', axisLabel:{color:'#fbbf24', formatter:v=>v+'元'}, splitLine:{show:false}, axisLine:{lineStyle:{color:'#fbbf24'}}, name:'客单价', nameTextStyle:{color:'#fbbf24',fontSize:11} }
+    ],
+    series: [
+      { name:'虚拟支付收入', type:'line', data:dailyData.map(d=>d.shIap), smooth:true, yAxisIndex:0,
+        lineStyle:{color:'#fbbf24',width:2.5}, itemStyle:{color:'#fbbf24'},
+        areaStyle:{color:new echarts.graphic.LinearGradient(0,0,0,1,[{offset:0,color:'rgba(251,191,36,0.25)'},{offset:1,color:'rgba(251,191,36,0)'}])},
+      },
+      { name:'客单价', type:'line', data:cpsPriceData, smooth:true, yAxisIndex:1,
+        lineStyle:{color:'#f87171',width:2,type:'dashed'}, itemStyle:{color:'#f87171'},
+        symbol:'circle', symbolSize:4,
+      }
+    ]
+  });
+  window.addEventListener('resize', ()=>chart.resize());
+})();
+
+// ============ CPS挂载 Chart 4: 次日留存 ============
+(function(){
+  const retainData = dailyData.filter(d=>d.ds<='04.21').map(d => d.shDau > 0 && d.shRetain > 0 ? Math.round(d.shRetain / d.shDau * 10000) / 100 : null);
+  const retainDates = dailyData.filter(d=>d.ds<='04.21').map(d=>d.ds);
+  const chart = echarts.init(document.getElementById('chart-cps-retain'));
+  chart.setOption({
+    ...chartTheme,
+    tooltip: { trigger:'axis', backgroundColor:'#1a1d2e', borderColor:'#2a2d3e', textStyle:{color:'#e8e8e8'},
+      formatter: function(p) { return p[0].axisValue + '<br>' + p.map(s => s.marker + s.seriesName + ': ' + s.value + '%').join('<br>'); }
+    },
+    legend: { data:['次日留存率'], textStyle:{color:'#8b8fa3'}, top:0 },
+    grid: { left:60, right:44, top:36, bottom:30 },
+    xAxis: { type:'category', data:retainDates, axisLabel:{color:'#8b8fa3'}, axisLine:{lineStyle:{color:'#2a2d3e'}} },
+    yAxis: { type:'value', axisLabel:{color:'#8b8fa3', formatter:v=>v+'%'}, splitLine:{lineStyle:{color:'#1e2130'}}, min: function(v){return Math.floor(v.min * 10) / 10;} },
+    series: [
+      { name:'次日留存率', type:'line', data:retainData, smooth:true,
+        lineStyle:{color:'#38bdf8',width:2.5}, itemStyle:{color:'#38bdf8'},
+        areaStyle:{color:new echarts.graphic.LinearGradient(0,0,0,1,[{offset:0,color:'rgba(56,189,248,0.25)'},{offset:1,color:'rgba(56,189,248,0)'}])},
+        markLine: {
+          silent: true, symbol: 'none',
+          lineStyle: { color: '#f87171', type: 'dashed', width: 1 },
+          data: [{ xAxis: '04.16', label: { formatter: '本周起点', color:'#f87171', fontSize:11 } }]
+        }
+      }
+    ]
+  });
+  window.addEventListener('resize', ()=>chart.resize());
+})();
+
+// ============ 视频号端原生 Chart 1: DAU ============
+(function(){
+  const finderDates = ['03.25','03.26','03.27','03.28','03.29','03.30','03.31','04.01','04.02','04.03','04.04','04.05','04.06','04.07','04.08','04.09','04.10','04.11','04.12','04.13','04.14','04.15','04.16','04.17','04.18','04.19','04.20','04.21','04.22'];
+  const outerDau = [149110362,153026893,154568045,151973317,150290135,153197428,152126221,148384694,147729781,149014718,148672987,151725906,153267316,151544814,149845707,156579725,147876414,150786442,150625643,146694886,142787857,145796202,153138021,153624271,158887343,164139611,159796013,158566272,158805758];
+  const midDau = [24343922,26060650,25835089,25457046,25993834,27563095,27195154,24991386,24870226,26638949,26335399,27207705,28038674,26507636,26469789,27162118,25406535,26148606,26157775,24878128,24822411,25199488,25708826,25309422,26391790,27779290,26977914,27696140,28145356];
+  const innerDau = [15819509,17126195,16850994,16447359,16829543,17730630,17526396,16018705,16048405,17188811,17107891,17746696,18377276,17715364,17263996,17993717,16667181,17204245,17297976,16443424,16434513,16628928,17005625,16876416,17500961,18327761,17847323,18406449,18674281];
+  const chart = echarts.init(document.getElementById('chart-finder-dau'));
+  chart.setOption({
+    ...chartTheme,
+    tooltip: { trigger:'axis', backgroundColor:'#1a1d2e', borderColor:'#2a2d3e', textStyle:{color:'#e8e8e8'},
+      formatter: function(p) {
+        return p[0].axisValue + '<br>' + p.map(s => s.marker + s.seriesName + ': ' + fmtW(s.value)).join('<br>');
+      }
+    },
+    legend: { data:['外层DAU(播放)','中间页DAU','里层DAU(点击)'], textStyle:{color:'#8b8fa3'}, top:0 },
+    grid: { left:70, right:44, top:36, bottom:30 },
+    xAxis: { type:'category', data:finderDates, axisLabel:{color:'#8b8fa3'}, axisLine:{lineStyle:{color:'#2a2d3e'}} },
+    yAxis: { type:'value', axisLabel:{color:'#8b8fa3', formatter:v=>fmtW(v)}, splitLine:{lineStyle:{color:'#1e2130'}} },
+    series: [
+      { name:'外层DAU(播放)', type:'line', data:outerDau, smooth:true,
+        lineStyle:{color:'#5b8def',width:2.5}, itemStyle:{color:'#5b8def'},
+        areaStyle:{color:new echarts.graphic.LinearGradient(0,0,0,1,[{offset:0,color:'rgba(91,141,239,0.15)'},{offset:1,color:'rgba(91,141,239,0)'}])},
+        markLine: {
+          silent: true, symbol: 'none',
+          lineStyle: { color: '#f87171', type: 'dashed', width: 1 },
+          data: [{ xAxis: '04.16', label: { formatter: '本周起点', color:'#f87171', fontSize:11 } }]
+        }
+      },
+      { name:'中间页DAU', type:'line', data:midDau, smooth:true,
+        lineStyle:{color:'#34d399',width:2}, itemStyle:{color:'#34d399'},
+        areaStyle:{color:new echarts.graphic.LinearGradient(0,0,0,1,[{offset:0,color:'rgba(52,211,153,0.15)'},{offset:1,color:'rgba(52,211,153,0)'}])},
+      },
+      { name:'里层DAU(点击)', type:'line', data:innerDau, smooth:true,
+        lineStyle:{color:'#7c5cfc',width:2}, itemStyle:{color:'#7c5cfc'},
+        areaStyle:{color:new echarts.graphic.LinearGradient(0,0,0,1,[{offset:0,color:'rgba(124,92,252,0.15)'},{offset:1,color:'rgba(124,92,252,0)'}])},
+      }
+    ]
+  });
+  window.addEventListener('resize', ()=>chart.resize());
+})();
+
+// ============ 视频号端原生 Chart 2: IAA收入趋势 ============
+(function(){
+  const finderDates = ['03.03','03.04','03.05','03.06','03.07','03.08','03.09','03.10','03.11','03.12','03.13','03.14','03.15','03.16','03.17','03.18','03.19','03.20','03.21','03.22','03.23','03.24','03.25','03.26','03.27','03.28','03.29','03.30','03.31','04.01','04.02'];
+  const iaaYuan = [15444650.01,15358586.76,16612049.05,16643619.72,16013736.80,14780438.70,13757634.69,14283435.56,14277839.70,13833226.17,13411417.12,13276441.47,13958106.04,12948124.52,12939236.75,14968808.76,13302341.30,13027038.24,14551427.77,14885700.30,14322305.67,14791172.52,15512160.50,19131136.67,17105602.27,16102708.27,16682850.30,16732107.14,15933254.77,13409154.91,14297918.41];
+  const iaaWan = iaaYuan.map(v => Math.round(v / 10000));
+  const expPv = [305740240,306608123,308463224,296713695,320062697,304067575,301239933,298084109,294099589,285960143,297031949,286804553,291685392,302806504,314941271,331522413,309088022,302464270,309257546,326169896,317340613,309413153,311189808,353023783,365993132,336442306,339724929,360821169,347746324,301148602,310503567];
+  const ecpm = iaaYuan.map((v,i) => expPv[i] > 0 ? Math.round(v / expPv[i] * 1000 * 10) / 10 : 0);
+  const chart = echarts.init(document.getElementById('chart-finder-iaa'));
+  chart.setOption({
+    ...chartTheme,
+    tooltip: { trigger:'axis', backgroundColor:'#1a1d2e', borderColor:'#2a2d3e', textStyle:{color:'#e8e8e8'},
+      formatter: function(p) {
+        return p[0].axisValue + '<br>' + p.map(s => {
+          if (s.seriesName==='ECPM(元)') return s.marker + s.seriesName + ': ' + s.value + '元';
+          return s.marker + s.seriesName + ': ' + s.value + 'w';
+        }).join('<br>');
+      }
+    },
+    legend: { data:['IAA收入(万元)','ECPM(元)'], textStyle:{color:'#8b8fa3'}, top:0 },
+    grid: { left:60, right:60, top:36, bottom:30 },
+    xAxis: { type:'category', data:finderDates, axisLabel:{color:'#8b8fa3'}, axisLine:{lineStyle:{color:'#2a2d3e'}} },
+    yAxis: [
+      { type:'value', axisLabel:{color:'#8b8fa3', formatter:v=>v+'w'}, splitLine:{lineStyle:{color:'#1e2130'}}, name:'IAA(万元)', nameTextStyle:{color:'#8b8fa3',fontSize:11} },
+      { type:'value', position:'right', axisLabel:{color:'#5b8def', formatter:v=>v+'元'}, splitLine:{show:false}, axisLine:{lineStyle:{color:'#5b8def'}}, name:'ECPM(元)', nameTextStyle:{color:'#5b8def',fontSize:11} }
+    ],
+    series: [
+      { name:'IAA收入(万元)', type:'bar', data:iaaWan, yAxisIndex:0,
+        itemStyle:{
+          color: new echarts.graphic.LinearGradient(0,0,0,1,[{offset:0,color:'#34d399'},{offset:1,color:'rgba(52,211,153,0.3)'}]),
+          borderRadius:[4,4,0,0]
+        },
+        barMaxWidth: 20,
+        markLine: {
+          silent: true, symbol: 'none',
+          lineStyle: { color: '#f87171', type: 'dashed', width: 1 },
+          data: [{ xAxis: '04.16', label: { formatter: '本周起点', color:'#f87171', fontSize:11 } }]
+        }
+      },
+      { name:'ECPM(元)', type:'line', data:ecpm, smooth:true, yAxisIndex:1,
+        lineStyle:{color:'#5b8def',width:2,type:'dashed'}, itemStyle:{color:'#5b8def'},
+        symbol:'circle', symbolSize:4,
+      }
+    ]
+  });
+  window.addEventListener('resize', ()=>chart.resize());
+})();
+
+// ============ Chart 4: Source Pie ============
+(function(){
+  const sourceData = [
+    {name:'广告(AMS)', value:75358427},
+    {name:'视频号', value:16792856},
+    {name:'内部跳转', value:7156487},
+    {name:'外部跳转', value:7685831},
+    {name:'分享', value:3998751},
+    {name:'任务栏', value:2940418},
+    {name:'微信功能', value:948936},
+    {name:'发现·小程序', value:818618},
+    {name:'其他', value:14937642}
+  ];
+  const total = sourceData.reduce((s,d)=>s+d.value,0);
+  const chart = echarts.init(document.getElementById('chart-source-pie'));
+  const colors = ['#5b8def','#7c5cfc','#34d399','#f87171','#fbbf24','#f472b6','#38bdf8','#8b8fa3'];
+  chart.setOption({
+    ...chartTheme,
+    tooltip: { trigger:'item', backgroundColor:'#1a1d2e', borderColor:'#2a2d3e', textStyle:{color:'#e8e8e8'},
+      formatter: p => p.name + '<br>PV: ' + fmtNum(p.value) + '<br>占比: ' + p.percent + '%'
+    },
+    color: colors,
+    series: [{
+      type:'pie', radius:['42%','72%'], center:['50%','50%'],
+      data: sourceData,
+      label: { color:'#8b8fa3', fontSize:12, formatter:'{b}\n{d}%' },
+      emphasis: { itemStyle:{shadowBlur:20, shadowColor:'rgba(0,0,0,0.5)'} },
+      itemStyle: { borderRadius:6, borderColor:'#1a1d2e', borderWidth:2 }
+    }]
+  });
+  window.addEventListener('resize', ()=>chart.resize());
+})();
+
+// ============ Chart 5: Source Bar comparison ============
+(function(){
+  const channels = ['广告','内部跳转','任务栏','发现页','外部跳转','微信功能','分享','视频号','其他'];
+  const thisWeek = [75358427,7156487,2940418,818618,7685831,948936,3998751,16792856,14937642];
+  const lastWeek = [64145022,6076444,2549821,630012,6458743,829563,3498824,17197407,8333967];
+  const chart = echarts.init(document.getElementById('chart-source-bar'));
+  chart.setOption({
+    ...chartTheme,
+    tooltip: { trigger:'axis', backgroundColor:'#1a1d2e', borderColor:'#2a2d3e', textStyle:{color:'#e8e8e8'},
+      formatter: function(p) { return p[0].axisValue + '<br>' + p.map(s => s.marker + s.seriesName + ': ' + fmtW(s.value)).join('<br>'); }
+    },
+    legend: { data:['本周','上周'], textStyle:{color:'#8b8fa3'}, top:0 },
+    grid: { left:80, right:44, top:36, bottom:30 },
+    yAxis: { type:'category', data:channels.reverse(), axisLabel:{color:'#8b8fa3'}, axisLine:{lineStyle:{color:'#2a2d3e'}} },
+    xAxis: { type:'value', axisLabel:{color:'#8b8fa3', formatter:v=>fmtW(v)}, splitLine:{lineStyle:{color:'#1e2130'}} },
+    series: [
+      { name:'本周', type:'bar', data:thisWeek.reverse(), itemStyle:{color:'#5b8def', borderRadius:[0,4,4,0]}, barGap:'15%' },
+      { name:'上周', type:'bar', data:lastWeek.reverse(), itemStyle:{color:'rgba(91,141,239,0.3)', borderRadius:[0,4,4,0]} }
+    ]
+  });
+  window.addEventListener('resize', ()=>chart.resize());
+})();
+
+// ============ 官小渠道 Pie ============
+(function(){
+  const gxSourceData = [
+    {name:'广告(联合发行)', value:10410038},
+    {name:'内部跳转', value:1181574},
+    {name:'其他', value:486501},
+    {name:'外部跳转', value:411206},
+    {name:'任务栏', value:406691},
+    {name:'发现·小程序', value:371153},
+    {name:'微信功能', value:155393},
+    {name:'视频号', value:109747},
+    {name:'分享', value:97239}
+  ];
+  const chart = echarts.init(document.getElementById('chart-gx-source-pie'));
+  const colors = ['#fb923c','#34d399','#fbbf24','#38bdf8','#f87171','#a78bfa','#f472b6','#7c5cfc','#8b8fa3'];
+  chart.setOption({
+    ...chartTheme,
+    tooltip: { trigger:'item', backgroundColor:'#1a1d2e', borderColor:'#2a2d3e', textStyle:{color:'#e8e8e8'},
+      formatter: p => p.name + '<br>日均UV: ' + fmtNum(p.value) + '<br>占比: ' + p.percent + '%'
+    },
+    color: colors,
+    series: [{
+      type:'pie', radius:['42%','72%'], center:['50%','50%'],
+      data: gxSourceData,
+      label: { color:'#8b8fa3', fontSize:12, formatter:'{b}\n{d}%' },
+      emphasis: { itemStyle:{shadowBlur:20, shadowColor:'rgba(0,0,0,0.5)'} },
+      itemStyle: { borderRadius:6, borderColor:'#1a1d2e', borderWidth:2 }
+    }]
+  });
+  window.addEventListener('resize', ()=>chart.resize());
+})();
+
+// ============ 官小渠道 Bar comparison ============
+(function(){
+  const channels = ['广告','内部跳转','任务栏','发现页','外部跳转','微信功能','分享','视频号','其他'];
+  const thisWeek = [10410038,1181574,406691,371153,411206,155393,97239,109747,486501];
+  const lastWeek = [9663256,1081800,369429,382638,331141,139853,85482,34914,419790];
+  const chart = echarts.init(document.getElementById('chart-gx-source-bar'));
+  chart.setOption({
+    ...chartTheme,
+    tooltip: { trigger:'axis', backgroundColor:'#1a1d2e', borderColor:'#2a2d3e', textStyle:{color:'#e8e8e8'},
+      formatter: function(p) { return p[0].axisValue + '<br>' + p.map(s => s.marker + s.seriesName + ': ' + fmtW(s.value)).join('<br>'); }
+    },
+    legend: { data:['本周','上周'], textStyle:{color:'#8b8fa3'}, top:0 },
+    grid: { left:80, right:44, top:36, bottom:30 },
+    yAxis: { type:'category', data:channels.reverse(), axisLabel:{color:'#8b8fa3'}, axisLine:{lineStyle:{color:'#2a2d3e'}} },
+    xAxis: { type:'value', axisLabel:{color:'#8b8fa3', formatter:v=>fmtW(v)}, splitLine:{lineStyle:{color:'#1e2130'}} },
+    series: [
+      { name:'本周', type:'bar', data:thisWeek.reverse(), itemStyle:{color:'#fb923c', borderRadius:[0,4,4,0]}, barGap:'15%' },
+      { name:'上周', type:'bar', data:lastWeek.reverse(), itemStyle:{color:'rgba(251,146,60,0.3)', borderRadius:[0,4,4,0]} }
+    ]
+  });
+  window.addEventListener('resize', ()=>chart.resize());
+})();
+
+// ============ 外部渠道 Pie ============
+(function(){
+  const extSourceData = [
+    {name:'小米浏览器', value:1201679},
+    {name:'HMS Core', value:948542},
+    {name:'OPPO浏览器', value:851891},
+    {name:'抖音短视频', value:786016},
+    {name:'荣耀负一屏', value:400967},
+    {name:'【1286】明文URL Scheme', value:374598},
+    {name:'【1194】URL Link打开小程序', value:291053},
+    {name:'小米视频', value:195819},
+    {name:'今日头条', value:147989},
+    {name:'七猫免费小说', value:133755},
+    {name:'百度', value:127317},
+    {name:'Breeno速览', value:114921},
+    {name:'其他', value:961735}
+  ];
+  const chart = echarts.init(document.getElementById('chart-ext-source-pie'));
+  const colors = ['#f87171','#fb923c','#fbbf24','#34d399','#5b8def','#7c5cfc','#38bdf8','#f472b6','#a78bfa','#e879f9','#94a3b8','#c084fc','#8b8fa3'];
+  chart.setOption({
+    ...chartTheme,
+    tooltip: { trigger:'item', backgroundColor:'#1a1d2e', borderColor:'#2a2d3e', textStyle:{color:'#e8e8e8'},
+      formatter: p => p.name + '<br>UV: ' + fmtNum(p.value) + '<br>占比: ' + p.percent + '%'
+    },
+    color: colors,
+    series: [{
+      type:'pie', radius:['42%','72%'], center:['50%','50%'],
+      data: extSourceData,
+      label: { color:'#8b8fa3', fontSize:12, formatter:'{b}\n{d}%' },
+      emphasis: { itemStyle:{shadowBlur:20, shadowColor:'rgba(0,0,0,0.5)'} },
+      itemStyle: { borderRadius:6, borderColor:'#1a1d2e', borderWidth:2 }
+    }]
+  });
+  window.addEventListener('resize', ()=>chart.resize());
+})();
+
+// ============ 外部渠道 Bar comparison ============
+(function(){
+  const channels = ['小米浏览器','HMS Core','OPPO浏览器','抖音短视频','荣耀负一屏','【1286】明文URL Scheme','【1194】URL Link打开小程序','小米视频','今日头条','七猫免费小说','百度','Breeno速览'];
+  const thisWeek = [1201679,948542,851891,786016,400967,374598,291053,195819,147989,133755,127317,114921];
+  const lastWeek = [1360423,1011754,1027478,1041811,532319,128757,315253,220956,159877,172797,146492,153373];
+  const chart = echarts.init(document.getElementById('chart-ext-source-bar'));
+  chart.setOption({
+    ...chartTheme,
+    tooltip: { trigger:'axis', backgroundColor:'#1a1d2e', borderColor:'#2a2d3e', textStyle:{color:'#e8e8e8'},
+      formatter: function(p) { return p[0].axisValue + '<br>' + p.map(s => s.marker + s.seriesName + ': ' + fmtNum(s.value)).join('<br>'); }
+    },
+    legend: { data:['本周','上周'], textStyle:{color:'#8b8fa3'}, top:0 },
+    grid: { left:100, right:44, top:36, bottom:30 },
+    yAxis: { type:'category', data:channels.reverse(), axisLabel:{color:'#8b8fa3'}, axisLine:{lineStyle:{color:'#2a2d3e'}} },
+    xAxis: { type:'value', axisLabel:{color:'#8b8fa3', formatter:v=>fmtNum(v)}, splitLine:{lineStyle:{color:'#1e2130'}} },
+    series: [
+      { name:'本周', type:'bar', data:thisWeek.reverse(), itemStyle:{color:'#f87171', borderRadius:[0,4,4,0]}, barGap:'15%' },
+      { name:'上周', type:'bar', data:lastWeek.reverse(), itemStyle:{color:'rgba(248,113,113,0.3)', borderRadius:[0,4,4,0]} }
+    ]
+  });
+  window.addEventListener('resize', ()=>chart.resize());
+})();
+
+
+
+// ============ Chart 8: Company Bar ============
+(function(){
+  const companies = ['腾讯','番茄','九州','掌读','麦芽','360','花笙','掌阅','容量','咪咕'];
+  const thisW = [302.2,164,120.1,98.6,39.6,39,31.2,28,25.3,15.6];
+  const chart = echarts.init(document.getElementById('chart-company-bar'));
+  chart.setOption({
+    ...chartTheme,
+    tooltip: { trigger:'axis', backgroundColor:'#1a1d2e', borderColor:'#2a2d3e', textStyle:{color:'#e8e8e8'},
+      formatter: p => p[0].axisValue + ': ' + p[0].value + 'w'
+    },
+    grid: { left:70, right:130, top:10, bottom:30 },
+    yAxis: { type:'category', data:companies.reverse(), axisLabel:{color:'#8b8fa3'}, axisLine:{lineStyle:{color:'#2a2d3e'}} },
+    xAxis: { type:'value', axisLabel:{color:'#8b8fa3', formatter:v=>v+'w'}, splitLine:{lineStyle:{color:'#1e2130'}} },
+    series: [{
+      type:'bar', data:thisW.reverse(),
+      itemStyle:{
+        color: function(params) {
+          const colors = ['#5b8def','#7c5cfc','#34d399','#fbbf24','#f472b6','#38bdf8','#f87171','#a78bfa','#fb923c','#94a3b8'];
+          return colors[companies.length - 1 - params.dataIndex] || '#5b8def';
+        },
+        borderRadius:[0,6,6,0]
+      },
+      barMaxWidth:28,
+      label: { show:true, position:'right', color:'#8b8fa3', fontSize:12, formatter:function(p){ var total=863.6; return p.value+'w ('+Math.round(p.value/total*1000)/10+'%)'; } }
+    }]
+  });
+  window.addEventListener('resize', ()=>chart.resize());
+})();
+
+// ============ Chart 9: Company Change ============
+(function(){
+  const companies = ['腾讯','番茄','九州','掌读','麦芽','360','花笙','掌阅','容量','咪咕'];
+  const changes = [-9.2,-53.3,-8.4,-31.6,-17,9,-36.9,-13.4,-19.1,null];
+  const chart = echarts.init(document.getElementById('chart-company-change'));
+  chart.setOption({
+    ...chartTheme,
+    tooltip: { trigger:'axis', backgroundColor:'#1a1d2e', borderColor:'#2a2d3e', textStyle:{color:'#e8e8e8'},
+      formatter: p => p[0].axisValue + ': ' + (p[0].value===null?'新进':(p[0].value>0?'+':'') + p[0].value + '%')
+    },
+    grid: { left:70, right:50, top:10, bottom:30 },
+    yAxis: { type:'category', data:companies.reverse(), axisLabel:{color:'#8b8fa3'}, axisLine:{lineStyle:{color:'#2a2d3e'}} },
+    xAxis: { type:'value', axisLabel:{color:'#8b8fa3', formatter:v=>v+'%'}, splitLine:{lineStyle:{color:'#1e2130'}} },
+    series: [{
+      type:'bar', data:changes.reverse(),
+      itemStyle:{
+        color: function(p) { return p.value === null ? '#8b8fa3' : p.value >= 0 ? '#34d399' : '#f87171'; },
+        borderRadius:[0,6,6,0]
+      },
+      barMaxWidth:28,
+      label: { show:true, position:'right', color:'#8b8fa3', fontSize:12, formatter:p=>p.value===null?'新进':(p.value>0?'+':'')+p.value+'%' }
+    }]
+  });
+  window.addEventListener('resize', ()=>chart.resize());
+})();
+
+// ============ Chart: Company GMV Bar ============
+(function(){
+  const companies = ['番茄','九州','点众','花笙','掌阅','麦芽','鑫诺','爱阅','映客快创','欢聚'];
+  const thisW = [244.4,121.8,90.4,5.5,4.8,4.1,2.1,1.3,0.3,0.3];
+  const total = thisW.reduce((a,b)=>a+b,0);
+  const chart = echarts.init(document.getElementById('chart-company-gmv-bar'));
+  chart.setOption({
+    ...chartTheme,
+    tooltip: { trigger:'axis', backgroundColor:'#1a1d2e', borderColor:'#2a2d3e', textStyle:{color:'#e8e8e8'},
+      formatter: p => p[0].axisValue + ': ' + p[0].value + 'w'
+    },
+    grid: { left:70, right:130, top:10, bottom:30 },
+    yAxis: { type:'category', data:companies.slice().reverse(), axisLabel:{color:'#8b8fa3'}, axisLine:{lineStyle:{color:'#2a2d3e'}} },
+    xAxis: { type:'value', axisLabel:{color:'#8b8fa3', formatter:v=>v+'w'}, splitLine:{lineStyle:{color:'#1e2130'}} },
+    series: [{
+      type:'bar', data:thisW.slice().reverse(),
+      itemStyle:{
+        color: function(params) {
+          const colors = ['#fbbf24','#f472b6','#34d399','#5b8def','#7c5cfc','#38bdf8','#f87171','#a78bfa','#fb923c','#94a3b8'];
+          return colors[companies.length - 1 - params.dataIndex] || '#fbbf24';
+        },
+        borderRadius:[0,6,6,0]
+      },
+      barMaxWidth:28,
+      label: { show:true, position:'right', color:'#8b8fa3', fontSize:12, formatter:function(p){ return p.value+'w ('+Math.round(p.value/total*1000)/10+'%)'; } }
+    }]
+  });
+  window.addEventListener('resize', ()=>chart.resize());
+})();
+
+// ============ Chart: Company GMV Change ============
+(function(){
+  const companies = ['番茄','九州','点众','花笙','掌阅','麦芽','鑫诺','爱阅','映客快创','欢聚'];
+  const changes = [-39.5,-6.9,34.5,-34.6,-70.4,-40.1,-48.9,-35.5,null,-66.3];
+  const chart = echarts.init(document.getElementById('chart-company-gmv-change'));
+  chart.setOption({
+    ...chartTheme,
+    tooltip: { trigger:'axis', backgroundColor:'#1a1d2e', borderColor:'#2a2d3e', textStyle:{color:'#e8e8e8'},
+      formatter: p => p[0].axisValue + ': ' + (p[0].value>0?'+':'') + p[0].value + '%'
+    },
+    grid: { left:70, right:50, top:10, bottom:30 },
+    yAxis: { type:'category', data:companies.reverse(), axisLabel:{color:'#8b8fa3'}, axisLine:{lineStyle:{color:'#2a2d3e'}} },
+    xAxis: { type:'value', axisLabel:{color:'#8b8fa3', formatter:v=>v+'%'}, splitLine:{lineStyle:{color:'#1e2130'}} },
+    series: [{
+      type:'bar', data:changes.reverse(),
+      itemStyle:{
+        color: function(p) { return p.value >= 0 ? '#34d399' : '#f87171'; },
+        borderRadius:[0,6,6,0]
+      },
+      barMaxWidth:28,
+      label: { show:true, position:'right', color:'#8b8fa3', fontSize:12, formatter:p=>(p.value>0?'+':'')+p.value+'%' }
+    }]
+  });
+  window.addEventListener('resize', ()=>chart.resize());
+})();
+
+// ============ 官小 Chart 1: DAU & 人均时长 ============
+(function(){
+  const gxDurData = dailyData.map(d => d.gxDau > 0 ? Math.round(d.gxDur / d.gxDau / 60 * 10) / 10 : 0);
+  const chart = echarts.init(document.getElementById('chart-official-dau'));
+  chart.setOption({
+    ...chartTheme,
+    tooltip: { trigger:'axis', backgroundColor:'#1a1d2e', borderColor:'#2a2d3e', textStyle:{color:'#e8e8e8'},
+      formatter: function(p) {
+        return p[0].axisValue + '<br>' + p.map(s => {
+          if (s.seriesName==='人均时长') return s.marker + s.seriesName + ': ' + s.value + 'min';
+          return s.marker + s.seriesName + ': ' + fmtW(s.value);
+        }).join('<br>');
+      }
+    },
+    legend: { data:['DAU','人均时长'], textStyle:{color:'#8b8fa3'}, top:0 },
+    grid: { left:60, right:60, top:36, bottom:30 },
+    xAxis: { type:'category', data:dailyData.map(d=>d.ds), axisLabel:{color:'#8b8fa3'}, axisLine:{lineStyle:{color:'#2a2d3e'}} },
+    yAxis: [
+      { type:'value', axisLabel:{color:'#8b8fa3', formatter:v=>fmtW(v)}, splitLine:{lineStyle:{color:'#1e2130'}} },
+      { type:'value', position:'right', axisLabel:{color:'#f472b6', formatter:v=>v+'min'}, splitLine:{show:false}, axisLine:{lineStyle:{color:'#f472b6'}}, name:'时长', nameTextStyle:{color:'#f472b6',fontSize:11} }
+    ],
+    series: [
+      { name:'DAU', type:'line', data:dailyData.map(d=>d.gxDau), smooth:true, yAxisIndex:0,
+        lineStyle:{color:'#5b8def',width:2.5}, itemStyle:{color:'#5b8def'},
+        areaStyle:{color:new echarts.graphic.LinearGradient(0,0,0,1,[{offset:0,color:'rgba(91,141,239,0.25)'},{offset:1,color:'rgba(91,141,239,0)'}])},
+        markLine: {
+          silent: true, symbol: 'none',
+          lineStyle: { color: '#f87171', type: 'dashed', width: 1 },
+          data: [{ xAxis: '04.16', label: { formatter: '本周起点', color:'#f87171', fontSize:11 } }]
+        }
+      },
+      { name:'人均时长', type:'line', data:gxDurData, smooth:true, yAxisIndex:1,
+        lineStyle:{color:'#f472b6',width:2,type:'dashed'}, itemStyle:{color:'#f472b6'},
+        symbol:'circle', symbolSize:4,
+      }
+    ]
+  });
+  window.addEventListener('resize', ()=>chart.resize());
+})();
+
+// ============ 官小 Chart 2: IAA & ECPM ============
+(function(){
+  const gxEcpm = dailyData.map(d => d.gxExp > 0 ? Math.round(d.gxIaa / d.gxExp * 1000 * 10) / 10 : 0);
+  const chart = echarts.init(document.getElementById('chart-official-iaa'));
+  chart.setOption({
+    ...chartTheme,
+    tooltip: { trigger:'axis', backgroundColor:'#1a1d2e', borderColor:'#2a2d3e', textStyle:{color:'#e8e8e8'},
+      formatter: function(p) {
+        return p[0].axisValue + '<br>' + p.map(s => {
+          if (s.seriesName==='ECPM') return s.marker + s.seriesName + ': ' + s.value + '元';
+          return s.marker + s.seriesName + ': ' + fmtW1(s.value);
+        }).join('<br>');
+      }
+    },
+    legend: { data:['IAA收入','ECPM'], textStyle:{color:'#8b8fa3'}, top:0 },
+    grid: { left:60, right:60, top:36, bottom:30 },
+    xAxis: { type:'category', data:dailyData.map(d=>d.ds), axisLabel:{color:'#8b8fa3'}, axisLine:{lineStyle:{color:'#2a2d3e'}} },
+    yAxis: [
+      { type:'value', axisLabel:{color:'#8b8fa3', formatter:v=>fmtW(v)}, splitLine:{lineStyle:{color:'#1e2130'}} },
+      { type:'value', position:'right', axisLabel:{color:'#34d399', formatter:v=>v+'元'}, splitLine:{show:false}, axisLine:{lineStyle:{color:'#34d399'}}, name:'ECPM', nameTextStyle:{color:'#34d399',fontSize:11} }
+    ],
+    series: [
+      { name:'IAA收入', type:'line', data:dailyData.map(d=>d.gxIaa), smooth:true, yAxisIndex:0,
+        lineStyle:{color:'#34d399',width:2.5}, itemStyle:{color:'#34d399'},
+        areaStyle:{color:new echarts.graphic.LinearGradient(0,0,0,1,[{offset:0,color:'rgba(52,211,153,0.25)'},{offset:1,color:'rgba(52,211,153,0)'}])},
+      },
+      { name:'ECPM', type:'line', data:gxEcpm, smooth:true, yAxisIndex:1,
+        lineStyle:{color:'#5b8def',width:2,type:'dashed'}, itemStyle:{color:'#5b8def'},
+        symbol:'circle', symbolSize:4,
+      }
+    ]
+  });
+  window.addEventListener('resize', ()=>chart.resize());
+})();
+
+// ============ 官小 Chart 3: 次日留存（含新用户） ============
+(function(){
+  const gxRetainData = dailyData.filter(d=>d.ds<='04.21').map(d => d.gxDau > 0 && d.gxRetain > 0 ? Math.round(d.gxRetain / d.gxDau * 10000) / 100 : null);
+  // 新用户次日留存率（真实SQL数据，来源：dws_wxapp_short_moive_key_action_scene_applabel_dramalabel_day_di，is_play_old_user=0）
+  const gxNewRetainRealData = {};
+  const gxNewRetainData = dailyData.filter(d=>d.ds<='04.21').map(d => gxNewRetainRealData[d.ds] != null ? gxNewRetainRealData[d.ds] : null);
+  const retainDates = dailyData.filter(d=>d.ds<='04.21').map(d=>d.ds);
+  const chart = echarts.init(document.getElementById('chart-official-retain'));
+  chart.setOption({
+    ...chartTheme,
+    tooltip: { trigger:'axis', backgroundColor:'#1a1d2e', borderColor:'#2a2d3e', textStyle:{color:'#e8e8e8'},
+      formatter: function(p) { return p[0].axisValue + '<br>' + p.filter(s=>s.value!=null).map(s => s.marker + s.seriesName + ': ' + s.value + '%').join('<br>'); }
+    },
+    legend: { data:['次日留存率','新用户次日留存率'], textStyle:{color:'#8b8fa3'}, top:0 },
+    grid: { left:60, right:44, top:36, bottom:30 },
+    xAxis: { type:'category', data:retainDates, axisLabel:{color:'#8b8fa3'}, axisLine:{lineStyle:{color:'#2a2d3e'}} },
+    yAxis: { type:'value', axisLabel:{color:'#8b8fa3', formatter:v=>v+'%'}, splitLine:{lineStyle:{color:'#1e2130'}}, min: function(v){return Math.floor(v.min * 10) / 10;} },
+    series: [
+      { name:'次日留存率', type:'line', data:gxRetainData, smooth:true,
+        lineStyle:{color:'#38bdf8',width:2.5}, itemStyle:{color:'#38bdf8'},
+        areaStyle:{color:new echarts.graphic.LinearGradient(0,0,0,1,[{offset:0,color:'rgba(56,189,248,0.25)'},{offset:1,color:'rgba(56,189,248,0)'}])},
+        markLine: {
+          silent: true, symbol: 'none',
+          lineStyle: { color: '#f87171', type: 'dashed', width: 1 },
+          data: [{ xAxis: '04.16', label: { formatter: '本周起点', color:'#f87171', fontSize:11 } }]
+        }
+      },
+      { name:'新用户次日留存率', type:'line', data:gxNewRetainData, smooth:true,
+        lineStyle:{color:'#f472b6',width:2,type:'dashed'}, itemStyle:{color:'#f472b6'},
+        symbol:'circle', symbolSize:4,
+      }
+    ]
+  });
+  window.addEventListener('resize', ()=>chart.resize());
+})();
+
+// ============ 官小 Chart 4: 联合发行 DAU & 占比 ============
+(function(){
+  const adDauData = dailyData.map(d => d.gxAd);
+  const adRatioData = dailyData.map(d => d.gxDau > 0 ? Math.round(d.gxAd / d.gxDau * 1000) / 10 : 0);
+  const chart = echarts.init(document.getElementById('chart-official-ad'));
+  chart.setOption({
+    ...chartTheme,
+    tooltip: { trigger:'axis', backgroundColor:'#1a1d2e', borderColor:'#2a2d3e', textStyle:{color:'#e8e8e8'},
+      formatter: function(p) {
+        return p[0].axisValue + '<br>' + p.map(s => {
+          if (s.seriesName==='占比') return s.marker + s.seriesName + ': ' + s.value + '%';
+          return s.marker + s.seriesName + ': ' + fmtW(s.value);
+        }).join('<br>');
+      }
+    },
+    legend: { data:['联合发行DAU','占比'], textStyle:{color:'#8b8fa3'}, top:0 },
+    grid: { left:60, right:60, top:36, bottom:30 },
+    xAxis: { type:'category', data:dailyData.map(d=>d.ds), axisLabel:{color:'#8b8fa3'}, axisLine:{lineStyle:{color:'#2a2d3e'}} },
+    yAxis: [
+      { type:'value', axisLabel:{color:'#8b8fa3', formatter:v=>fmtW(v)}, splitLine:{lineStyle:{color:'#1e2130'}} },
+      { type:'value', position:'right', axisLabel:{color:'#fbbf24', formatter:v=>v+'%'}, splitLine:{show:false}, axisLine:{lineStyle:{color:'#fbbf24'}}, name:'占比', nameTextStyle:{color:'#fbbf24',fontSize:11}, min:40, max:90 }
+    ],
+    series: [
+      { name:'联合发行DAU', type:'bar', data:adDauData, yAxisIndex:0,
+        itemStyle:{
+          color: new echarts.graphic.LinearGradient(0,0,0,1,[{offset:0,color:'#fb923c'},{offset:1,color:'rgba(251,146,60,0.3)'}]),
+          borderRadius:[4,4,0,0]
+        },
+        barMaxWidth: 24,
+        markLine: {
+          silent: true, symbol: 'none',
+          lineStyle: { color: '#f87171', type: 'dashed', width: 1 },
+          data: [{ xAxis: '04.16', label: { formatter: '本周起点', color:'#f87171', fontSize:11 } }]
+        }
+      },
+      { name:'占比', type:'line', data:adRatioData, smooth:true, yAxisIndex:1,
+        lineStyle:{color:'#fbbf24',width:2,type:'dashed'}, itemStyle:{color:'#fbbf24'},
+        symbol:'circle', symbolSize:4,
+      }
+    ]
+  });
+  window.addEventListener('resize', ()=>chart.resize());
+})();
+
+// ============ Drama Table ============
+(function(){
+  const tbody = document.getElementById('drama-table-body');
+  dramas.forEach((d, i) => {
+    const rank = i + 1;
+    const rankClass = rank <= 3 ? 'rank-' + rank : 'rank-other';
+    const type = d.iap > 0 && d.iaa > 0 ? 'iaap' : (d.iap > 0 ? 'iap' : 'iaa');
+    const typeLabel = type === 'iaap' ? 'IAAP' : (type === 'iap' ? 'IAP' : 'IAA');
+    const typeClass = 'tag-' + type;
+    const officialTag = d.official ? '<span class="tag tag-official">官小</span>' : '';
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td><span class="rank ${rankClass}">${rank}</span></td>
+      <td style="max-width:280px;overflow:hidden;text-overflow:ellipsis;">${d.name} <span class="tag ${typeClass}">${typeLabel}</span>${officialTag}</td>
+      <td>${d.company}</td>
+      <td>${fmtNum(d.uv)}</td>
+      <td>${fmtNum(d.play)}</td>
+      <td style="color:${d.iap>0?'#fbbf24':'#555'}">${d.iap > 0 ? fmtMoney(d.iap) : '-'}</td>
+      <td style="color:${d.iaa>0?'#34d399':'#555'}">${d.iaa > 0 ? fmtMoney(d.iaa) : '-'}</td>
+      <td style="font-weight:600;">${fmtMoney(d.total)}</td>
+    `;
+    tbody.appendChild(tr);
+  });
+})();
+</script>
+
+</body>
+</html>
