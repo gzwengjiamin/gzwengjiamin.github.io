@@ -800,7 +800,7 @@
   <div class="section" id="sec-drama">
     <div class="section-title">Top 30 热门剧目 <span class="badge">Drama Ranking</span></div>
     <div class="chart-card" style="overflow-x:auto;">
-      <div class="chart-title">按综合收入排行（04.16 - 04.22）</div>
+      <div class="chart-title">按综合收入排行（04.16 - 04.22，同名剧已合并展示）</div>
       <table class="data-table">
         <thead>
           <tr>
@@ -818,13 +818,7 @@
         </tbody>
       </table>
     </div>
-    <div class="analysis-box">
-      <strong>剧目分析：</strong>
-      Top1 未知<span class="highlight">《天降福妻》</span>以总收入285.3w登顶，UV达568w；
-      Top2 腾讯<span class="highlight">《财神天降，送我上青云》</span>总收入265.9w;
-      Top3 九州<span class="highlight">《嫁傻不嫁渣》</span>总收入233.7w。
-      Top30中腾讯占<span class="highlight">7部</span>、九州占<span class="highlight">5部</span>、掌读占<span class="highlight">4部</span>、未知商户占<span class="highlight">8部</span>。
-      <br><strong>官小授权：</strong>Top30中<span class="highlight">18部</span>已授权官方小程序。</div>
+    <div class="analysis-box" id="drama-analysis-box"></div>
   </div>
 
   <!-- Footer -->
@@ -1715,8 +1709,57 @@ const chartTheme = {
 
 // ============ Drama Table ============
 (function(){
+  function mergeDramas(rows) {
+    const grouped = new Map();
+    rows.forEach((d) => {
+      const key = d.name.trim();
+      let current = grouped.get(key);
+      if (!current) {
+        current = {
+          name: key,
+          companies: new Set(),
+          uv: 0,
+          play: 0,
+          iap: 0,
+          iaa: 0,
+          total: 0,
+          official: false,
+          rawCount: 0,
+        };
+        grouped.set(key, current);
+      }
+      current.companies.add(d.company);
+      current.uv += d.uv;
+      current.play += d.play;
+      current.iap += d.iap;
+      current.iaa += d.iaa;
+      current.total += d.total;
+      current.official = current.official || d.official;
+      current.rawCount += 1;
+    });
+
+    return Array.from(grouped.values()).map((d) => {
+      const companies = Array.from(d.companies).filter(Boolean);
+      const knownCompanies = companies.filter((name) => name !== '未知');
+      return {
+        name: d.name,
+        company: knownCompanies.length > 0 ? knownCompanies.join('/') : '未知',
+        uv: d.uv,
+        play: d.play,
+        iap: d.iap,
+        iaa: d.iaa,
+        total: d.total,
+        official: d.official,
+        rawCount: d.rawCount,
+      };
+    }).sort((a, b) => b.total - a.total);
+  }
+
+  const displayDramas = mergeDramas(dramas);
   const tbody = document.getElementById('drama-table-body');
-  dramas.forEach((d, i) => {
+  const analysisBox = document.getElementById('drama-analysis-box');
+
+  displayDramas.forEach((d, i) => {
     const rank = i + 1;
     const rankClass = rank <= 3 ? 'rank-' + rank : 'rank-other';
     const type = d.iap > 0 && d.iaa > 0 ? 'iaap' : (d.iap > 0 ? 'iap' : 'iaa');
@@ -1736,6 +1779,16 @@ const chartTheme = {
     `;
     tbody.appendChild(tr);
   });
+
+  const top3 = displayDramas.slice(0, 3);
+  const officialCount = displayDramas.filter((d) => d.official).length;
+  const mergedCount = displayDramas.filter((d) => d.rawCount > 1).length;
+  analysisBox.innerHTML = `
+      <strong>剧目分析：</strong>
+      Top1 <span class="highlight">《${top3[0].name}》</span>多渠道合并后总收入${fmtMoney(top3[0].total)}，UV达${fmtNum(top3[0].uv)}；
+      Top2 <span class="highlight">《${top3[1].name}》</span>总收入${fmtMoney(top3[1].total)}；
+      Top3 <span class="highlight">《${top3[2].name}》</span>总收入${fmtMoney(top3[2].total)}。
+      <br><strong>去重说明：</strong>同名剧目的多渠道分发行已合并展示，原始Top30收敛为<span class="highlight">${displayDramas.length}部</span>独立剧目，其中<span class="highlight">${mergedCount}部</span>存在重复分发行，<span class="highlight">${officialCount}部</span>已授权官方小程序。`;
 })();
 </script>
 
